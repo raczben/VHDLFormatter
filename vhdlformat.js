@@ -8,14 +8,14 @@ function beautify(input, settings) {
     try {
         const data = VHDLFormatter_1.beautify(input, settings);
         return {
+            data,
             err: null,
-            data
         };
     }
     catch (err) {
         return {
+            data: null,
             err,
-            data: null
         };
     }
 }

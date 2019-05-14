@@ -3,7 +3,7 @@ import * as process from 'process'
 import { beautify as _beautify, BeautifierSettings } from "./VHDLFormatter";
 
 interface BeautifyStatus {
-  err?: Object;
+  err?: object;
   data: string;
 };
 
@@ -11,14 +11,14 @@ function beautify(input: string, settings: BeautifierSettings): BeautifyStatus {
   try {
     const data = _beautify(input, settings);
     return {
+      data,
       err: null,
-      data
-    }
+    };
   } catch (err) {
     return {
+      data: null,
       err,
-      data: null
-    }
+    };
   }
 }
 
