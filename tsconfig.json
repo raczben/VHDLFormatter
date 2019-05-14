@@ -3,7 +3,8 @@
     "target": "es6",
     "module": "commonjs",
     "lib": ["es6","dom"],
-    "sourceMap": true
+    "sourceMap": true,
+    "moduleResolution": "node"
   },
   "files": [
     "main.ts",
@@ -12,6 +13,7 @@
     "tests/VHDLFormatterUnitTests.ts",
     "tests/descriptiveCounterTests.ts",
     "tests/assert.ts",
+    "vhdlformat.ts"
   ],
   "exclude": [
     "node_modules",
