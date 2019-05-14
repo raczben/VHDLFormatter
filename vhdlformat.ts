@@ -2,8 +2,7 @@ import * as fs from 'fs';
 import * as process from 'process'
 import { beautify as _beautify, BeautifierSettings } from "./VHDLFormatter";
 
-interface BeautifyStatus
-{
+interface BeautifyStatus {
   err?: Object;
   data: string;
 };
@@ -15,8 +14,7 @@ function beautify(input: string, settings: BeautifierSettings): BeautifyStatus {
       err: null,
       data
     }
-  } catch (err)
-  {
+  } catch (err) {
     return {
       err,
       data: null
@@ -24,78 +22,111 @@ function beautify(input: string, settings: BeautifierSettings): BeautifyStatus {
   }
 }
 
-function main(filename: string, write: boolean): void
-{
-  fs.readFile(filename, (err, data) => {
-    if (err != null) {
-      console.error("error: could not read filename \"" + filename + "\"");
-      console.error(err);
-      process.exit(-1);
+function main(options: CommandOptions): Promise<void> {
+  return new Promise((resolve, reject) => {
+    if (!fs.existsSync(options.input)) {
+      console.error(`-- [ERROR]: could not read filename "${options.input}"`);
+      reject(new Error("Could not find file"));
       return;
     }
 
-    const input_vhdl = data.toString('utf8');
+    fs.readFile(options.input, (err, data) => {
+      if (err != null || ((typeof data) === "undefined")) {
+        console.error(`-- [ERROR]: could not read filename "${options.input}"`);
+        reject(err);
+      }
+      const input_vhdl = data.toString('utf8');
 
-    const settings = new BeautifierSettings(
-      false, // removeComments
-      false, // removeReports
-      false, // checkAlias
-      null, // signAlignSettings
-      "uppercase", // keyWordCase
-      "uppercase", // typeCase
-      "\t", // indentation
-      null, // newline settings
-      "\r\n" // end of line
+      const settings = new BeautifierSettings(
+        false, // removeComments
+        false, // removeReports
+        false, // checkAlias
+        null, // signAlignSettings
+        "uppercase", // keyWordCase
+        "uppercase", // typeCase
+        "\t", // indentation
+        null, // newline settings
+        "\r\n" // end of line
       );
 
-    const result = beautify(input_vhdl, settings);
-    
-    if (result.err !== null)
-    {
-      console.error(`error: could not beautify "${filename}"`);
-      console.error(err);
-      process.exit(-1);
-      return;
-    }
+      const result = beautify(input_vhdl, settings);
 
-    const output_vhdl = result.data;
+      if (result.err !== null) {
+        console.error(`-- [ERROR]: could not beautify "${options.input}"`);
+        reject(err);
+      }
 
-    // fs.writeFile(filename, output_vhdl, (err, data))
-    if (write) {
-      const data = new Uint8Array(Buffer.from(output_vhdl));
-      fs.writeFile(filename, data, (err) => {
-        if (err) {
-          console.error(`error: could not save "${filename}"`)
-          console.error(err);
-          process.exit(-1);
-          return;
-        }
+      const output_vhdl = result.data;
 
-        console.log(`info: saved file "${filename}"`)
-        process.exit(0);
-      })
-    }
-    else {
+      if (!options.quiet) {
+        console.log(output_vhdl);
+      }
 
-      console.log(output_vhdl);
-      process.exit(0);
+      if (options.overwrite) {
+        const data = new Uint8Array(Buffer.from(output_vhdl));
+        fs.writeFile(options.input, data, (err) => {
+          if (err) {
+            console.error(`-- [ERROR]: could not save "${options.input}"`);
+            reject(err);
+          } else {
 
-    }
+            console.log(`-- [INFO]: saved file "${options.input}"`);
+            resolve();
+          }
+        });
+      }
+      else {
+        console.error(`-- [INFO]: read file "${options.input}"`);
+        resolve();
+      }
+    });
   });
-  
+}
+
+interface CommandOptions {
+  input: string;
+  overwrite?: boolean;
+  verbose?: boolean;
+  quiet?: boolean;
+};
+
+function print_usage(): void {
+  console.error(`-- USAGE: node vhdlformat.js [--write] [--debug] [--quiet] <filename 1> [filename 2] ... [filename N]`);
 }
 
 (() => {
-  
-  if (process.argv.length !== 3)
-  {
-    console.error("usage: node beautify.js <filename>")
+
+  if (process.argv.length < 3) {
+    print_usage();
     process.exit(-1);
     return;
   }
 
-  const filename = process.argv[2];
-  const write = true;
+  const filenames = process.argv.filter((arg) => arg.endsWith(".vhd"));
 
-  main(filename, write);
+  if (filenames.length < 1) {
+    print_usage();
+    console.error("-- [ERROR]: must specify at least one input filename")
+    process.exit(-1);
+    return;
+  }
+
+  filenames.forEach((input) => {
+    console.log(`-- [INFO]: Reading ${input}...`)
+    const overwrite = process.argv.includes('--write');
+    const verbose = process.argv.includes("--verbose");
+    const quiet = process.argv.includes("--quiet");
+
+    main({
+      input,
+      overwrite,
+      verbose,
+      quiet
+    }).catch((err) => {
+      if (verbose) {
+        console.error(err);
+      }
+    });
+
+  })
 })();

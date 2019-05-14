@@ -2,9 +2,9 @@
 
 VHDL CLI code formatter written in TypeScript.
 
-Run in terminal:
+Usage:
 ```bash
-node vhdlformat.js <filename>
+node vhdlformat.js [--write] [--debug] [--quiet] <filename 1> [filename 2] ... [filename N]
 ```
 This will replace the file with the formatted version.
 
