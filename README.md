@@ -1,8 +1,13 @@
-# VHDL Fomatter
+# VHDL Fomatter (CLI Version)
 
-VHDL formatter web online written in javascript
+Run like:
+```bash
+node vhdlformat.js <filename>
+```
 
-[Online version https://g2384.github.io/VHDLFormatter/](https://g2384.github.io/VHDLFormatter/)
+VHDL formatter cli tool written in TypeScript
+
+[Original online version https://g2384.github.io/VHDLFormatter/](https://g2384.github.io/VHDLFormatter/)
 
 ## Release Notes
 
