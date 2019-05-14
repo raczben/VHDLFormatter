@@ -2,6 +2,8 @@
 
 VHDL CLI code formatter written in TypeScript.
 
+[Original online version https://g2384.github.io/VHDLFormatter/](https://g2384.github.io/VHDLFormatter/)
+
 Usage:
 ```bash
 node vhdlformat.js [OPTIONS] <filename 1> [filename 2] ... [filename N]
@@ -14,8 +16,6 @@ The following command line options are available:
 - `--write`: Overwrites the source files with the formatted version.
 - `--quiet`: Doesn't send the formatted file to stdout.
 - `--debug`: Displays additional debug info when an error occurs.
-
-[Original online version https://g2384.github.io/VHDLFormatter/](https://g2384.github.io/VHDLFormatter/)
 
 ## Release Notes
 
