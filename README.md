@@ -1,11 +1,12 @@
-# VHDL Fomatter (CLI Version)
+# VHDL Formatter (CLI Version)
 
-Run like:
+VHDL CLI code formatter written in TypeScript.
+
+Run in terminal:
 ```bash
 node vhdlformat.js <filename>
 ```
-
-VHDL formatter cli tool written in TypeScript
+This will replace the file with the formatted version.
 
 [Original online version https://g2384.github.io/VHDLFormatter/](https://g2384.github.io/VHDLFormatter/)
 
