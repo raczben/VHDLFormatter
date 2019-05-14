@@ -1,10 +1,32 @@
 import * as fs from 'fs';
 import * as process from 'process'
-import { beautify, BeautifierSettings, signAlignSettings, NewLineSettings } from "./VHDLFormatter";
+import { beautify as _beautify, BeautifierSettings } from "./VHDLFormatter";
 
-function main(filename, write)
+interface BeautifyStatus
 {
-  fs.readFile(filename, { 'encoding': 'utf8'}, function(err, input_vhdl) {
+  err?: Object;
+  data: string;
+};
+
+function beautify(input: string, settings: BeautifierSettings): BeautifyStatus {
+  try {
+    const data = _beautify(input, settings);
+    return {
+      err: null,
+      data
+    }
+  } catch (err)
+  {
+    return {
+      err,
+      data: null
+    }
+  }
+}
+
+function main(filename: string, write: boolean): void
+{
+  fs.readFile(filename, (err, data) => {
     if (err != null) {
       console.error("error: could not read filename \"" + filename + "\"");
       console.error(err);
@@ -12,29 +34,31 @@ function main(filename, write)
       return;
     }
 
-    let output_vhdl;
+    const input_vhdl = data.toString('utf8');
 
-    try {
-      const settings = new BeautifierSettings(
-        false, // removeComments
-        false, // removeReports
-        false, // checkAlias
-        null, // signAlignSettings
-        "uppercase", // keyWordCase
-        "uppercase", // typeCase
-        "\t", // indentation
-        null, // newline settings
-        "\r\n" // end of line
-        );
-      output_vhdl = beautify(input_vhdl, settings);
-    }
-    catch (err)
+    const settings = new BeautifierSettings(
+      false, // removeComments
+      false, // removeReports
+      false, // checkAlias
+      null, // signAlignSettings
+      "uppercase", // keyWordCase
+      "uppercase", // typeCase
+      "\t", // indentation
+      null, // newline settings
+      "\r\n" // end of line
+      );
+
+    const result = beautify(input_vhdl, settings);
+    
+    if (result.err !== null)
     {
       console.error(`error: could not beautify "${filename}"`);
       console.error(err);
       process.exit(-1);
       return;
     }
+
+    const output_vhdl = result.data;
 
     // fs.writeFile(filename, output_vhdl, (err, data))
     if (write) {
