@@ -1,5 +1,5 @@
 *.map
 /.vscode/*
 !/.vscode/settings.json
-/tests/*.js
+# /tests/*.js
 /node_modules/*
