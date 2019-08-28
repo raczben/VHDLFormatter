@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@types/node": "^12.7.2",
+    "mocha": "^6.2.0",
     "prettier-tslint": "^0.4.2",
     "typescript": "^3.4.5"
   },
