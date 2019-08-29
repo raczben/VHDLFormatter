@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as process from 'process'
-import * as minimist from 'minimist'
+import * as commander from 'commander'
 import { beautify as _beautify, BeautifierSettings } from "./VHDLFormatter";
 
 interface BeautifyStatus {
@@ -84,58 +84,32 @@ function main(options: any): Promise<void> {
   });
 }
 
-function print_usage(): void {
-  console.error(`-- USAGE: node vhdlformat.js [--write] [--debug] [--quiet] <filename 1> [filename 2] ... [filename N]`);
-}
-
 (() => {
     
     
-  const options = {
-    string: ['key-word-case', 'type-case', 'indentation', 'end-of-line', 'inputFiles'],
-    boolean: ['version', 'help', 'overwrite', 'debug', 'quiet', 'version', 'help',
-        'remove-comments', 'remove-reports', 'check-alias'],
-    alias: {
-        v           : 'version',
-        h           : 'help',
-        removeComments: 'remove-comments',
-        removeReports: 'remove-reports',
-        checkAlias  : 'check-alias',
-        keyWordCase : 'key-word-case',
-        typeCase    : 'type-case',
-        endOfLine   : 'end-of-line',
-    },
-    default: {
-        'version'           : false,
-        'help'              : false,
-        'remove-comments'   : false,       
-        'remove-reports'    : false,       
-        'check-alias'       : false,
-        // sign-align-settings : null,        
-        'key-word-case'     : "uppercase", 
-        'type-case'         : "uppercase", 
-        'indentation'       : "\t",
-        'end-of-line'       : "\r\n"  
-    }
-  };
-  
-  let args = minimist(process.argv.slice(2), options);
-  
-  args.inputFiles = args._
-  
-  console.log('args:', args);
-  
+  let myCommander = commander
+    .description('vhdlformat beautifies your vhdl sources. It can indentat lines and change cases of the string literals.')
+    .option('--key-word-case <casestr>',    'upper or lower-case the VHDL keywords', 'uppercase')
+    .option('--type-case <casestr>',        'upper or lower-case the VHDL types', 'uppercase')
+    .option('--indentation <blankstr>',     'Unit of the indentation.', '    ')
+    .option('--end-of-line <eol>',          'Can set the line endings depending your platform.', '\r\n')
+    .option('--inputFiles <path>',          'The input files that should be beautified')
+    .option('--overwrite',                  '', '')
+    .option('--debug',                      '', '')
+    .option('--quiet',                      '', '')
+    .option('--remove-comments',            '', '')
+    .option('--remove-reports',             '', '')
+    .option('--check-alias',                '', '')
+    .version('0.0.1', '-v, --version');
+    
 
-  if (process.argv.length < 3) {
-    print_usage();
-    process.exit(-1);
-    return;
-  }
+  let args =  myCommander.parse(process.argv);
+  args.inputFiles = args.args;
+  
 
   if (args.inputFiles.length < 1) {
-    print_usage();
     console.error("-- [ERROR]: must specify at least one input filename")
-    process.exit(-1);
+    myCommander.help();
     return;
   }
 
