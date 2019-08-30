@@ -10,11 +10,16 @@
     "minimist": "^1.2.0"
   },
   "devDependencies": {
+    "@types/chai": "^4.2.0",
+    "@types/mocha": "^5.2.7",
     "@types/node": "^12.7.2",
+    "@types/tape": "^4.2.33",
+    "chai": "^4.2.0",
     "mocha": "^6.2.0",
     "prettier-tslint": "^0.4.2",
+    "tape": "^4.11.0",
     "ts-node": "^8.3.0",
-    "typescript": "^3.4.5"
+    "typescript": "^3.6.2"
   },
   "scripts": {
     "test": "mocha tests",

@@ -7,14 +7,45 @@ import { SetNewLinesAfterSymbols } from "../VHDLFormatter";
 import { beautify3 } from "../VHDLFormatter";
 import { FormattedLine } from "../VHDLFormatter";
 import { FormattedLineToString } from "../VHDLFormatter";
-import { CompareString } from "./assert";
-import { assert } from "./assert";
+// import { CompareString } from "./assert";
+import { assert } from "chai";
+import { expect } from "chai";
 import { testDescriptiveCounter } from "./descriptiveCounterTests";
 
 let testCount: number = 0;
 
-var showUnitTests = true;//window.location.href.indexOf("http") < 0;
+
+
+describe('test', function() {
+  it('00aatesttest', function() {
+    assert.equal(2, 2);
+  }); 
+  it('IntegrationTest', function() {
+    IntegrationTest();
+  }); 
+  it('UnitTestRemoveAsserts', function() {
+    UnitTestRemoveAsserts();
+  }); 
+  it('UnitTestApplyNoNewLineAfter', function() {
+    UnitTestApplyNoNewLineAfter();
+  }); 
+  it('UnitTestSetNewLinesAfterSymbols', function() {
+    UnitTestSetNewLinesAfterSymbols();
+  }); 
+  it('UnitTestFormattedLineToString', function() {
+    UnitTestFormattedLineToString();
+  }); 
+  it('UnitTestbeautify3', function() {
+    UnitTestbeautify3();
+  }); 
+});
+
+
+
+var showUnitTests = false;//window.location.href.indexOf("http") < 0;
 if (showUnitTests) {
+    
+    assert.equal(2, 2);
     //IntegrationTest84();
     testCount = 0;
     IntegrationTest();
@@ -43,7 +74,9 @@ function FormattedLineToStringCase1() {
         new FormattedLine("a;", 0),
         new FormattedLine("b;", 0)];
     let expected: Array<string> = ["a;", "b;"];
-    UnitTest7(FormattedLineToString, "General", "    ", inputs, expected);
+    let actual = FormattedLineToString(inputs, "    ");
+    expect(actual).to.deep.equal(expected);
+    // UnitTest7(FormattedLineToString, "General", "    ", inputs, expected);
 }
 
 function FormattedLineToStringCase2() {
@@ -51,7 +84,8 @@ function FormattedLineToStringCase2() {
         new FormattedLine("a;", 1),
         new FormattedLine("b;", 2)];
     let expected: Array<string> = [" a;", "  b;"];
-    UnitTest7(FormattedLineToString, "General", " ", inputs, expected);
+    let actual = FormattedLineToString(inputs, " ");
+    expect(actual).to.deep.equal(expected);
 }
 
 function UnitTestbeautify3() {
@@ -686,10 +720,11 @@ function compareFormattedLine(expected: FormattedLine, actual: FormattedLine, me
         result += 'indents are not equal;\nexpected: "' + expected.Line + '", ' + expected.Indent
             + ';\nactual: "' + actual.Line + '", ' + actual.Indent + "\n";
     }
-    let compareResult = CompareString(actual.Line, expected.Line);
-    if (compareResult != true) {
-        result += compareResult;
-    }
+    assert.equal(actual.Line, expected.Line)
+    // let compareResult = CompareString(actual.Line, expected.Line);
+    // if (compareResult != true) {
+        // result += compareResult;
+    // }
     return result;
 }
 
@@ -720,7 +755,7 @@ type FormattedLinesCallback = (inputs: (FormattedLine | FormattedLine[])[], inde
 
 function UnitTest7(func: FormattedLinesCallback, testName: string, indentation: string, inputs: (FormattedLine | FormattedLine[])[], expected: Array<string>) {
     let actual = func(inputs, indentation);
-    assertArray(testName, expected, actual);
+    assert.equal(expected, actual);
 }
 
 function UnitTest6(func: BeautifyCallback, testName: string, parameters: BeautifierSettings, inputs: Array<string>, expected: (FormattedLine | FormattedLine[])[], startIndex: number, expectedEndIndex: number, indent: number) {
@@ -729,7 +764,8 @@ function UnitTest6(func: BeautifyCallback, testName: string, parameters: Beautif
     if (endIndex != expectedEndIndex) {
         console.log(testName + " failed;\nend index, actual: " + endIndex + "; expected: " + expectedEndIndex)
     }
-    assertFormattedLines(testName, expected, actual);
+    
+    expect(actual).to.deep.equal(expected);
 }
 
 function UnitTest5(func: String2Callback, testName: string, parameters: NewLineSettings, inputs, expected: string) {
@@ -740,13 +776,13 @@ function UnitTest5(func: String2Callback, testName: string, parameters: NewLineS
 function UnitTest4(func: Array2Callback, testName: string, parameters: Array<string>, inputs: Array<string>, expected: Array<string>) {
     let actual = JSON.parse(JSON.stringify(inputs));
     func(actual, parameters);
-    assertArray(testName, expected, actual);
+    assert(expected, actual);
 }
 
 function UnitTest3(func: ArrayCallback, testName: string, inputs: Array<string>, expected: Array<string>) {
     let actual = JSON.parse(JSON.stringify(inputs));
     func(actual);
-    assertArray(testName, expected, actual);
+    assert(expected, actual);
 }
 
 function deepCopy(objectToCopy: BeautifierSettings): BeautifierSettings {
@@ -1499,7 +1535,7 @@ function IntegrationTest2() {
 
 function assertAndCountTest(testName: string, expected: string, actual: string, message?: undefined) {
     testCount++;
-    return assert(testName, expected, actual, message);
+    return assert(expected, actual);
 }
 
 function CompareArray(actual: Array<string>, expected: Array<string>) {
@@ -1507,7 +1543,7 @@ function CompareArray(actual: Array<string>, expected: Array<string>) {
     let result: string = "";
     for (var i = 0; i < l; i++) {
         if (actual[i] != expected[i]) {
-            result += CompareString(actual[i], expected[i]) + "\n";
+            // result += CompareString(actual[i], expected[i]) + "\n";
         }
     }
     if (actual.length > expected.length) {
