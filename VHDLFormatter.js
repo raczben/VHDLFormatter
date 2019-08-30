@@ -231,7 +231,6 @@ function beautify(input, settings) {
     if (newLineSettings != null) {
         input = SetNewLinesAfterSymbols(input, newLineSettings);
         arr = input.split("\r\n");
-        ApplyNoNewLineAfter(arr, newLineSettings.noNewLineAfter);
         input = arr.join("\r\n");
     }
     input = input.replace(/([a-zA-Z0-9\); ])\);(@@comments[0-9]+)?@@end/g, '$1\r\n);$2@@end');
@@ -700,20 +699,6 @@ function ReserveSemicolonInKeywords(arr) {
         }
     }
 }
-function ApplyNoNewLineAfter(arr, noNewLineAfter) {
-    if (noNewLineAfter == null) {
-        return;
-    }
-    for (let i = 0; i < arr.length; i++) {
-        noNewLineAfter.forEach(n => {
-            let regex = new RegExp("(" + n.toUpperCase + ")[ a-z0-9]+[a-z0-9]+");
-            if (arr[i].regexIndexOf(regex) >= 0) {
-                arr[i] += "@@singleline";
-            }
-        });
-    }
-}
-exports.ApplyNoNewLineAfter = ApplyNoNewLineAfter;
 function RemoveAsserts(arr) {
     let need_semi = false;
     let inAssert = false;

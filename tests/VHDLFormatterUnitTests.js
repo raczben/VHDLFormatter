@@ -8,18 +8,38 @@ const VHDLFormatter_5 = require("../VHDLFormatter");
 const VHDLFormatter_6 = require("../VHDLFormatter");
 const VHDLFormatter_7 = require("../VHDLFormatter");
 const VHDLFormatter_8 = require("../VHDLFormatter");
-const VHDLFormatter_9 = require("../VHDLFormatter");
-const assert_1 = require("./assert");
-const assert_2 = require("./assert");
+// import { CompareString } from "./assert";
+const chai_1 = require("chai");
+const chai_2 = require("chai");
 const descriptiveCounterTests_1 = require("./descriptiveCounterTests");
 let testCount = 0;
-var showUnitTests = true; //window.location.href.indexOf("http") < 0;
+describe('test', function () {
+    it('00aatesttest', function () {
+        chai_1.assert.equal(2, 2);
+    });
+    it('IntegrationTest', function () {
+        IntegrationTest();
+    });
+    it('UnitTestRemoveAsserts', function () {
+        UnitTestRemoveAsserts();
+    });
+    it('UnitTestSetNewLinesAfterSymbols', function () {
+        UnitTestSetNewLinesAfterSymbols();
+    });
+    it('UnitTestFormattedLineToString', function () {
+        UnitTestFormattedLineToString();
+    });
+    it('UnitTestbeautify3', function () {
+        UnitTestbeautify3();
+    });
+});
+var showUnitTests = false; //window.location.href.indexOf("http") < 0;
 if (showUnitTests) {
+    chai_1.assert.equal(2, 2);
     //IntegrationTest84();
     testCount = 0;
     IntegrationTest();
     UnitTestRemoveAsserts();
-    UnitTestApplyNoNewLineAfter();
     UnitTestSetNewLinesAfterSymbols();
     UnitTestFormattedLineToString();
     UnitTestbeautify3();
@@ -33,19 +53,22 @@ function UnitTestFormattedLineToString() {
 }
 function FormattedLineToStringCase1() {
     let inputs = [
-        new VHDLFormatter_8.FormattedLine("a;", 0),
-        new VHDLFormatter_8.FormattedLine("b;", 0)
+        new VHDLFormatter_7.FormattedLine("a;", 0),
+        new VHDLFormatter_7.FormattedLine("b;", 0)
     ];
     let expected = ["a;", "b;"];
-    UnitTest7(VHDLFormatter_9.FormattedLineToString, "General", "    ", inputs, expected);
+    let actual = VHDLFormatter_8.FormattedLineToString(inputs, "    ");
+    chai_2.expect(actual).to.deep.equal(expected);
+    // UnitTest7(FormattedLineToString, "General", "    ", inputs, expected);
 }
 function FormattedLineToStringCase2() {
     let inputs = [
-        new VHDLFormatter_8.FormattedLine("a;", 1),
-        new VHDLFormatter_8.FormattedLine("b;", 2)
+        new VHDLFormatter_7.FormattedLine("a;", 1),
+        new VHDLFormatter_7.FormattedLine("b;", 2)
     ];
     let expected = [" a;", "  b;"];
-    UnitTest7(VHDLFormatter_9.FormattedLineToString, "General", " ", inputs, expected);
+    let actual = VHDLFormatter_8.FormattedLineToString(inputs, " ");
+    chai_2.expect(actual).to.deep.equal(expected);
 }
 function UnitTestbeautify3() {
     console.log("=== beautify3 ===");
@@ -77,8 +100,8 @@ function Beautify3Case1() {
     new_line_after_symbols.noNewLineAfter = ["port", "generic"];
     let settings = getDefaultBeautifierSettings(new_line_after_symbols);
     let inputs = ["a;", "b;"];
-    let expected = [new VHDLFormatter_8.FormattedLine("a;", 0), new VHDLFormatter_8.FormattedLine("b;", 0)];
-    UnitTest6(VHDLFormatter_7.beautify3, "General", settings, inputs, expected, 0, 1, 0);
+    let expected = [new VHDLFormatter_7.FormattedLine("a;", 0), new VHDLFormatter_7.FormattedLine("b;", 0)];
+    UnitTest6(VHDLFormatter_6.beautify3, "General", settings, inputs, expected, 0, 1, 0);
 }
 function Beautify3Case2() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -87,11 +110,11 @@ function Beautify3Case2() {
     let settings = getDefaultBeautifierSettings(new_line_after_symbols);
     let inputs = ["IF x = '1' THEN", "RETURN 1;", "END IF;"];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("IF x = '1' THEN", 0),
-        new VHDLFormatter_8.FormattedLine("RETURN 1;", 1),
-        new VHDLFormatter_8.FormattedLine("END IF;", 0)
+        new VHDLFormatter_7.FormattedLine("IF x = '1' THEN", 0),
+        new VHDLFormatter_7.FormattedLine("RETURN 1;", 1),
+        new VHDLFormatter_7.FormattedLine("END IF;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "IF END", settings, inputs, expected, 0, 2, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "IF END", settings, inputs, expected, 0, 2, 0);
 }
 function Beautify3Case3() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -108,15 +131,15 @@ function Beautify3Case3() {
         "END IF;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("IF x = '1' THEN", 0),
-        new VHDLFormatter_8.FormattedLine("RETURN 1;", 1),
-        new VHDLFormatter_8.FormattedLine("ELSIF x = '0' THEN", 0),
-        new VHDLFormatter_8.FormattedLine("RETURN 0;", 1),
-        new VHDLFormatter_8.FormattedLine("ELSE", 0),
-        new VHDLFormatter_8.FormattedLine("RETURN -1;", 1),
-        new VHDLFormatter_8.FormattedLine("END IF;", 0)
+        new VHDLFormatter_7.FormattedLine("IF x = '1' THEN", 0),
+        new VHDLFormatter_7.FormattedLine("RETURN 1;", 1),
+        new VHDLFormatter_7.FormattedLine("ELSIF x = '0' THEN", 0),
+        new VHDLFormatter_7.FormattedLine("RETURN 0;", 1),
+        new VHDLFormatter_7.FormattedLine("ELSE", 0),
+        new VHDLFormatter_7.FormattedLine("RETURN -1;", 1),
+        new VHDLFormatter_7.FormattedLine("END IF;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "if elsif else end", settings, inputs, expected, 0, 6, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "if elsif else end", settings, inputs, expected, 0, 6, 0);
 }
 function Beautify3Case4() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -124,8 +147,8 @@ function Beautify3Case4() {
     new_line_after_symbols.noNewLineAfter = ["port", "generic"];
     let settings = getDefaultBeautifierSettings(new_line_after_symbols);
     let inputs = ["END"];
-    let expected = [new VHDLFormatter_8.FormattedLine("END", 0)];
-    UnitTest6(VHDLFormatter_7.beautify3, "one line END", settings, inputs, expected, 0, 0, 0);
+    let expected = [new VHDLFormatter_7.FormattedLine("END", 0)];
+    UnitTest6(VHDLFormatter_6.beautify3, "one line END", settings, inputs, expected, 0, 0, 0);
 }
 function Beautify3Case5() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -141,14 +164,14 @@ function Beautify3Case5() {
         "END CASE;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("CASE b", 0),
-        new VHDLFormatter_8.FormattedLine("WHEN 1 =>", 1),
-        new VHDLFormatter_8.FormattedLine("c <= d;", 2),
-        new VHDLFormatter_8.FormattedLine("WHEN 2 =>", 1),
-        new VHDLFormatter_8.FormattedLine("d <= f;", 2),
-        new VHDLFormatter_8.FormattedLine("END CASE;", 0)
+        new VHDLFormatter_7.FormattedLine("CASE b", 0),
+        new VHDLFormatter_7.FormattedLine("WHEN 1 =>", 1),
+        new VHDLFormatter_7.FormattedLine("c <= d;", 2),
+        new VHDLFormatter_7.FormattedLine("WHEN 2 =>", 1),
+        new VHDLFormatter_7.FormattedLine("d <= f;", 2),
+        new VHDLFormatter_7.FormattedLine("END CASE;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "case when when end", settings, inputs, expected, 0, 5, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "case when when end", settings, inputs, expected, 0, 5, 0);
 }
 function Beautify3Case6() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -170,20 +193,20 @@ function Beautify3Case6() {
         "END CASE;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("CASE b", 0),
-        new VHDLFormatter_8.FormattedLine("WHEN 1 =>", 1),
-        new VHDLFormatter_8.FormattedLine("c <= d;", 2),
-        new VHDLFormatter_8.FormattedLine("CASE b", 2),
-        new VHDLFormatter_8.FormattedLine("WHEN 1 =>", 3),
-        new VHDLFormatter_8.FormattedLine("c <= d;", 4),
-        new VHDLFormatter_8.FormattedLine("WHEN 2 =>", 3),
-        new VHDLFormatter_8.FormattedLine("d <= f;", 4),
-        new VHDLFormatter_8.FormattedLine("END CASE;", 2),
-        new VHDLFormatter_8.FormattedLine("WHEN 2 =>", 1),
-        new VHDLFormatter_8.FormattedLine("d <= f;", 2),
-        new VHDLFormatter_8.FormattedLine("END CASE;", 0)
+        new VHDLFormatter_7.FormattedLine("CASE b", 0),
+        new VHDLFormatter_7.FormattedLine("WHEN 1 =>", 1),
+        new VHDLFormatter_7.FormattedLine("c <= d;", 2),
+        new VHDLFormatter_7.FormattedLine("CASE b", 2),
+        new VHDLFormatter_7.FormattedLine("WHEN 1 =>", 3),
+        new VHDLFormatter_7.FormattedLine("c <= d;", 4),
+        new VHDLFormatter_7.FormattedLine("WHEN 2 =>", 3),
+        new VHDLFormatter_7.FormattedLine("d <= f;", 4),
+        new VHDLFormatter_7.FormattedLine("END CASE;", 2),
+        new VHDLFormatter_7.FormattedLine("WHEN 2 =>", 1),
+        new VHDLFormatter_7.FormattedLine("d <= f;", 2),
+        new VHDLFormatter_7.FormattedLine("END CASE;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "case & case end", settings, inputs, expected, 0, 11, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "case & case end", settings, inputs, expected, 0, 11, 0);
 }
 function Beautify3Case7() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -198,13 +221,13 @@ function Beautify3Case7() {
         "END ARCHITECTURE;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("ARCHITECTURE a OF one IS", 0),
-        new VHDLFormatter_8.FormattedLine("SIGNAL x : INTEGER;", 1),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 0),
-        new VHDLFormatter_8.FormattedLine("-- architecture", 1),
-        new VHDLFormatter_8.FormattedLine("END ARCHITECTURE;", 0),
+        new VHDLFormatter_7.FormattedLine("ARCHITECTURE a OF one IS", 0),
+        new VHDLFormatter_7.FormattedLine("SIGNAL x : INTEGER;", 1),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 0),
+        new VHDLFormatter_7.FormattedLine("-- architecture", 1),
+        new VHDLFormatter_7.FormattedLine("END ARCHITECTURE;", 0),
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "architecture", settings, inputs, expected, 0, 4, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "architecture", settings, inputs, expected, 0, 4, 0);
 }
 function Beautify3Case8() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -224,18 +247,18 @@ function Beautify3Case8() {
         "END ARCHITECTURE;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("ARCHITECTURE a OF one IS", 0),
-        new VHDLFormatter_8.FormattedLine("SIGNAL x : INTEGER;", 1),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 0),
-        new VHDLFormatter_8.FormattedLine("-- architecture", 1),
-        new VHDLFormatter_8.FormattedLine("END ARCHITECTURE;", 0),
-        new VHDLFormatter_8.FormattedLine("ARCHITECTURE b OF one IS", 0),
-        new VHDLFormatter_8.FormattedLine("SIGNAL x : INTEGER;", 1),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 0),
-        new VHDLFormatter_8.FormattedLine("-- architecture", 1),
-        new VHDLFormatter_8.FormattedLine("END ARCHITECTURE;", 0),
+        new VHDLFormatter_7.FormattedLine("ARCHITECTURE a OF one IS", 0),
+        new VHDLFormatter_7.FormattedLine("SIGNAL x : INTEGER;", 1),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 0),
+        new VHDLFormatter_7.FormattedLine("-- architecture", 1),
+        new VHDLFormatter_7.FormattedLine("END ARCHITECTURE;", 0),
+        new VHDLFormatter_7.FormattedLine("ARCHITECTURE b OF one IS", 0),
+        new VHDLFormatter_7.FormattedLine("SIGNAL x : INTEGER;", 1),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 0),
+        new VHDLFormatter_7.FormattedLine("-- architecture", 1),
+        new VHDLFormatter_7.FormattedLine("END ARCHITECTURE;", 0),
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "architecture 2", settings, inputs, expected, 0, 9, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "architecture 2", settings, inputs, expected, 0, 9, 0);
 }
 function Beautify3Case9() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -250,13 +273,13 @@ function Beautify3Case9() {
         "END PROCEDURE;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("PROCEDURE foo(x : IN INTEGER; y : OUT INTEGER) IS", 0),
-        new VHDLFormatter_8.FormattedLine("VARIABLE i : INTEGER;", 1),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 0),
-        new VHDLFormatter_8.FormattedLine("y := x + 1;", 1),
-        new VHDLFormatter_8.FormattedLine("END PROCEDURE;", 0)
+        new VHDLFormatter_7.FormattedLine("PROCEDURE foo(x : IN INTEGER; y : OUT INTEGER) IS", 0),
+        new VHDLFormatter_7.FormattedLine("VARIABLE i : INTEGER;", 1),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 0),
+        new VHDLFormatter_7.FormattedLine("y := x + 1;", 1),
+        new VHDLFormatter_7.FormattedLine("END PROCEDURE;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "procedure", settings, inputs, expected, 0, 4, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "procedure", settings, inputs, expected, 0, 4, 0);
 }
 function Beautify3Case10() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -270,12 +293,12 @@ function Beautify3Case10() {
         "END PACKAGE;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("PACKAGE three IS", 0),
-        new VHDLFormatter_8.FormattedLine("SIGNAL s : INTEGER;", 1),
-        new VHDLFormatter_8.FormattedLine("ALIAS sa IS s;", 1),
-        new VHDLFormatter_8.FormattedLine("END PACKAGE;", 0)
+        new VHDLFormatter_7.FormattedLine("PACKAGE three IS", 0),
+        new VHDLFormatter_7.FormattedLine("SIGNAL s : INTEGER;", 1),
+        new VHDLFormatter_7.FormattedLine("ALIAS sa IS s;", 1),
+        new VHDLFormatter_7.FormattedLine("END PACKAGE;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "package", settings, inputs, expected, 0, 3, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "package", settings, inputs, expected, 0, 3, 0);
 }
 function Beautify3Case11() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -305,28 +328,28 @@ function Beautify3Case11() {
         "END PACKAGE BODY;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("PACKAGE p IS", 0),
-        new VHDLFormatter_8.FormattedLine("PROCEDURE foo(x : IN INTEGER; y : OUT INTEGER);", 1),
-        new VHDLFormatter_8.FormattedLine("END PACKAGE;", 0),
-        new VHDLFormatter_8.FormattedLine("PACKAGE BODY p IS", 0),
-        new VHDLFormatter_8.FormattedLine("PROCEDURE foo(x : IN INTEGER; y : OUT INTEGER) IS", 1),
-        new VHDLFormatter_8.FormattedLine("VARIABLE i : INTEGER;", 2),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 1),
-        new VHDLFormatter_8.FormattedLine("y := x + 1;", 2),
-        new VHDLFormatter_8.FormattedLine("END PROCEDURE;", 1),
-        new VHDLFormatter_8.FormattedLine("PROCEDURE bar(FILE x : text);", 1),
-        new VHDLFormatter_8.FormattedLine("PROCEDURE baz IS", 1),
-        new VHDLFormatter_8.FormattedLine("TYPE foo;", 2),
-        new VHDLFormatter_8.FormattedLine("ALIAS x IS y;", 2),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 1),
-        new VHDLFormatter_8.FormattedLine("END PROCEDURE;", 1),
-        new VHDLFormatter_8.FormattedLine("PROCEDURE tralala IS", 1),
-        new VHDLFormatter_8.FormattedLine("USE work.foo;", 2),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 1),
-        new VHDLFormatter_8.FormattedLine("END PROCEDURE;", 1),
-        new VHDLFormatter_8.FormattedLine("END PACKAGE BODY;", 0)
+        new VHDLFormatter_7.FormattedLine("PACKAGE p IS", 0),
+        new VHDLFormatter_7.FormattedLine("PROCEDURE foo(x : IN INTEGER; y : OUT INTEGER);", 1),
+        new VHDLFormatter_7.FormattedLine("END PACKAGE;", 0),
+        new VHDLFormatter_7.FormattedLine("PACKAGE BODY p IS", 0),
+        new VHDLFormatter_7.FormattedLine("PROCEDURE foo(x : IN INTEGER; y : OUT INTEGER) IS", 1),
+        new VHDLFormatter_7.FormattedLine("VARIABLE i : INTEGER;", 2),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 1),
+        new VHDLFormatter_7.FormattedLine("y := x + 1;", 2),
+        new VHDLFormatter_7.FormattedLine("END PROCEDURE;", 1),
+        new VHDLFormatter_7.FormattedLine("PROCEDURE bar(FILE x : text);", 1),
+        new VHDLFormatter_7.FormattedLine("PROCEDURE baz IS", 1),
+        new VHDLFormatter_7.FormattedLine("TYPE foo;", 2),
+        new VHDLFormatter_7.FormattedLine("ALIAS x IS y;", 2),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 1),
+        new VHDLFormatter_7.FormattedLine("END PROCEDURE;", 1),
+        new VHDLFormatter_7.FormattedLine("PROCEDURE tralala IS", 1),
+        new VHDLFormatter_7.FormattedLine("USE work.foo;", 2),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 1),
+        new VHDLFormatter_7.FormattedLine("END PROCEDURE;", 1),
+        new VHDLFormatter_7.FormattedLine("END PACKAGE BODY;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "package procedure", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "package procedure", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case12() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -356,28 +379,28 @@ function Beautify3Case12() {
         "END ARCHITECTURE;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("ARCHITECTURE a OF b IS", 0),
-        new VHDLFormatter_8.FormattedLine("SIGNAL x : INTEGER := 0;", 1),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 0),
-        new VHDLFormatter_8.FormattedLine("p: PROCESS IS", 1),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 1),
-        new VHDLFormatter_8.FormattedLine("END PROCESS;", 1),
-        new VHDLFormatter_8.FormattedLine("PROCESS", 1),
-        new VHDLFormatter_8.FormattedLine("VARIABLE y : INTEGER := 5;", 2),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 1),
-        new VHDLFormatter_8.FormattedLine("x <= y;", 2),
-        new VHDLFormatter_8.FormattedLine("END PROCESS;", 1),
-        new VHDLFormatter_8.FormattedLine("PROCESS (x) IS", 1),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 1),
-        new VHDLFormatter_8.FormattedLine("x <= x + 1;", 2),
-        new VHDLFormatter_8.FormattedLine("END PROCESS;", 1),
-        new VHDLFormatter_8.FormattedLine("POSTPONED PROCESS IS", 1),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 1),
-        new VHDLFormatter_8.FormattedLine("END PROCESS;", 1),
-        new VHDLFormatter_8.FormattedLine("POSTPONED assert x = 1;", 1),
-        new VHDLFormatter_8.FormattedLine("END ARCHITECTURE;", 0)
+        new VHDLFormatter_7.FormattedLine("ARCHITECTURE a OF b IS", 0),
+        new VHDLFormatter_7.FormattedLine("SIGNAL x : INTEGER := 0;", 1),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 0),
+        new VHDLFormatter_7.FormattedLine("p: PROCESS IS", 1),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 1),
+        new VHDLFormatter_7.FormattedLine("END PROCESS;", 1),
+        new VHDLFormatter_7.FormattedLine("PROCESS", 1),
+        new VHDLFormatter_7.FormattedLine("VARIABLE y : INTEGER := 5;", 2),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 1),
+        new VHDLFormatter_7.FormattedLine("x <= y;", 2),
+        new VHDLFormatter_7.FormattedLine("END PROCESS;", 1),
+        new VHDLFormatter_7.FormattedLine("PROCESS (x) IS", 1),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 1),
+        new VHDLFormatter_7.FormattedLine("x <= x + 1;", 2),
+        new VHDLFormatter_7.FormattedLine("END PROCESS;", 1),
+        new VHDLFormatter_7.FormattedLine("POSTPONED PROCESS IS", 1),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 1),
+        new VHDLFormatter_7.FormattedLine("END PROCESS;", 1),
+        new VHDLFormatter_7.FormattedLine("POSTPONED assert x = 1;", 1),
+        new VHDLFormatter_7.FormattedLine("END ARCHITECTURE;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "package postponed procedure", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "package postponed procedure", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case13() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -391,12 +414,12 @@ function Beautify3Case13() {
         "END PROTECTED SharedCounter;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("TYPE SharedCounter IS PROTECTED", 0),
-        new VHDLFormatter_8.FormattedLine("PROCEDURE increment (N : INTEGER := 1);", 1),
-        new VHDLFormatter_8.FormattedLine("IMPURE FUNCTION value RETURN INTEGER;", 1),
-        new VHDLFormatter_8.FormattedLine("END PROTECTED SharedCounter;", 0)
+        new VHDLFormatter_7.FormattedLine("TYPE SharedCounter IS PROTECTED", 0),
+        new VHDLFormatter_7.FormattedLine("PROCEDURE increment (N : INTEGER := 1);", 1),
+        new VHDLFormatter_7.FormattedLine("IMPURE FUNCTION value RETURN INTEGER;", 1),
+        new VHDLFormatter_7.FormattedLine("END PROTECTED SharedCounter;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "type projected", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "type projected", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case14() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -412,14 +435,14 @@ function Beautify3Case14() {
         "TYPE SharedCounter IS PROTECTED BODY"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("PACKAGE p IS", 0),
-        new VHDLFormatter_8.FormattedLine("TYPE SharedCounter IS PROTECTED", 1),
-        new VHDLFormatter_8.FormattedLine("PROCEDURE increment (N : INTEGER := 1);", 2),
-        new VHDLFormatter_8.FormattedLine("IMPURE FUNCTION value RETURN INTEGER;", 2),
-        new VHDLFormatter_8.FormattedLine("END PROTECTED SharedCounter;", 1),
-        new VHDLFormatter_8.FormattedLine("TYPE SharedCounter IS PROTECTED BODY", 1)
+        new VHDLFormatter_7.FormattedLine("PACKAGE p IS", 0),
+        new VHDLFormatter_7.FormattedLine("TYPE SharedCounter IS PROTECTED", 1),
+        new VHDLFormatter_7.FormattedLine("PROCEDURE increment (N : INTEGER := 1);", 2),
+        new VHDLFormatter_7.FormattedLine("IMPURE FUNCTION value RETURN INTEGER;", 2),
+        new VHDLFormatter_7.FormattedLine("END PROTECTED SharedCounter;", 1),
+        new VHDLFormatter_7.FormattedLine("TYPE SharedCounter IS PROTECTED BODY", 1)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "type projected", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "type projected", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case15() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -432,11 +455,11 @@ function Beautify3Case15() {
         "constant g : integer := 2:1_0:;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("constant a : integer := 2#1101#", 0),
-        new VHDLFormatter_8.FormattedLine("constant b : integer := 3#20#;", 0),
-        new VHDLFormatter_8.FormattedLine("constant g : integer := 2:1_0:;", 0)
+        new VHDLFormatter_7.FormattedLine("constant a : integer := 2#1101#", 0),
+        new VHDLFormatter_7.FormattedLine("constant b : integer := 3#20#;", 0),
+        new VHDLFormatter_7.FormattedLine("constant g : integer := 2:1_0:;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "constant", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "constant", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case16() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -450,12 +473,12 @@ function Beautify3Case16() {
         "y <= 2;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("x <= 1 WHEN foo", 0),
-        new VHDLFormatter_8.FormattedLine("ELSE 2 WHEN bar", 1),
-        new VHDLFormatter_8.FormattedLine("ELSE 3;", 1),
-        new VHDLFormatter_8.FormattedLine("y <= 2;", 0)
+        new VHDLFormatter_7.FormattedLine("x <= 1 WHEN foo", 0),
+        new VHDLFormatter_7.FormattedLine("ELSE 2 WHEN bar", 1),
+        new VHDLFormatter_7.FormattedLine("ELSE 3;", 1),
+        new VHDLFormatter_7.FormattedLine("y <= 2;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "one line ends with ;", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "one line ends with ;", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case17() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -470,13 +493,13 @@ function Beautify3Case17() {
         "y <= 2;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("WITH y SELECT x <=", 0),
-        new VHDLFormatter_8.FormattedLine("1 WHEN a,", 1),
-        new VHDLFormatter_8.FormattedLine("2 WHEN b,", 1),
-        new VHDLFormatter_8.FormattedLine("3 WHEN OTHERS;", 1),
-        new VHDLFormatter_8.FormattedLine("y <= 2;", 0)
+        new VHDLFormatter_7.FormattedLine("WITH y SELECT x <=", 0),
+        new VHDLFormatter_7.FormattedLine("1 WHEN a,", 1),
+        new VHDLFormatter_7.FormattedLine("2 WHEN b,", 1),
+        new VHDLFormatter_7.FormattedLine("3 WHEN OTHERS;", 1),
+        new VHDLFormatter_7.FormattedLine("y <= 2;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "WITH SELECT line ends with ;", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "WITH SELECT line ends with ;", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case18() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -495,17 +518,17 @@ function Beautify3Case18() {
         "END CONFIGURATION;",
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("CONFIGURATION conf OF ent IS", 0),
-        new VHDLFormatter_8.FormattedLine("USE work.foo;", 1),
-        new VHDLFormatter_8.FormattedLine("ATTRIBUTE x OF y : SIGNAL IS 5;", 1),
-        new VHDLFormatter_8.FormattedLine("FOR arch", 1),
-        new VHDLFormatter_8.FormattedLine("FOR ALL : comp", 2),
-        new VHDLFormatter_8.FormattedLine("USE ENTITY work.foo(x);", 3),
-        new VHDLFormatter_8.FormattedLine("END FOR;", 2),
-        new VHDLFormatter_8.FormattedLine("END FOR;", 1),
-        new VHDLFormatter_8.FormattedLine("END CONFIGURATION;", 0)
+        new VHDLFormatter_7.FormattedLine("CONFIGURATION conf OF ent IS", 0),
+        new VHDLFormatter_7.FormattedLine("USE work.foo;", 1),
+        new VHDLFormatter_7.FormattedLine("ATTRIBUTE x OF y : SIGNAL IS 5;", 1),
+        new VHDLFormatter_7.FormattedLine("FOR arch", 1),
+        new VHDLFormatter_7.FormattedLine("FOR ALL : comp", 2),
+        new VHDLFormatter_7.FormattedLine("USE ENTITY work.foo(x);", 3),
+        new VHDLFormatter_7.FormattedLine("END FOR;", 2),
+        new VHDLFormatter_7.FormattedLine("END FOR;", 1),
+        new VHDLFormatter_7.FormattedLine("END CONFIGURATION;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "configuration & for", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "configuration & for", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case19() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -519,12 +542,12 @@ function Beautify3Case19() {
         "END FUNCTION \"+\";",
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("FUNCTION \" + \"(x, y : integer) return integer IS", 0),
-        new VHDLFormatter_8.FormattedLine("BEGIN", 0),
-        new VHDLFormatter_8.FormattedLine("RETURN 42;", 1),
-        new VHDLFormatter_8.FormattedLine("END FUNCTION \"+\";", 0),
+        new VHDLFormatter_7.FormattedLine("FUNCTION \" + \"(x, y : integer) return integer IS", 0),
+        new VHDLFormatter_7.FormattedLine("BEGIN", 0),
+        new VHDLFormatter_7.FormattedLine("RETURN 42;", 1),
+        new VHDLFormatter_7.FormattedLine("END FUNCTION \"+\";", 0),
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "function", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "function", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case20() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -537,11 +560,11 @@ function Beautify3Case20() {
         "y <= 2;"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("m <= ((1, 2, 3, 4)", 0),
-        new VHDLFormatter_8.FormattedLine("(5, 6, 7, 8));", 1),
-        new VHDLFormatter_8.FormattedLine("y <= 2;", 0)
+        new VHDLFormatter_7.FormattedLine("m <= ((1, 2, 3, 4)", 0),
+        new VHDLFormatter_7.FormattedLine("(5, 6, 7, 8));", 1),
+        new VHDLFormatter_7.FormattedLine("y <= 2;", 0)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "function", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "function", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function Beautify3Case21() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -556,13 +579,13 @@ function Beautify3Case21() {
         "PORT MAP( a => open );"
     ];
     let expected = [
-        new VHDLFormatter_8.FormattedLine("g: ENTITY work.foo", 0),
-        new VHDLFormatter_8.FormattedLine("GENERIC MAP( X => 1 )", 1),
-        new VHDLFormatter_8.FormattedLine("PORT MAP( a, b );", 1),
-        new VHDLFormatter_8.FormattedLine("h: ENTITY work.foo", 0),
-        new VHDLFormatter_8.FormattedLine("PORT MAP( a => open );", 1)
+        new VHDLFormatter_7.FormattedLine("g: ENTITY work.foo", 0),
+        new VHDLFormatter_7.FormattedLine("GENERIC MAP( X => 1 )", 1),
+        new VHDLFormatter_7.FormattedLine("PORT MAP( a, b );", 1),
+        new VHDLFormatter_7.FormattedLine("h: ENTITY work.foo", 0),
+        new VHDLFormatter_7.FormattedLine("PORT MAP( a => open );", 1)
     ];
-    UnitTest6(VHDLFormatter_7.beautify3, "function", settings, inputs, expected, 0, expected.length - 1, 0);
+    UnitTest6(VHDLFormatter_6.beautify3, "function", settings, inputs, expected, 0, expected.length - 1, 0);
 }
 function UnitTestSetNewLinesAfterSymbols() {
     console.log("=== SetNewLinesAfterSymbols ===");
@@ -571,21 +594,10 @@ function UnitTestSetNewLinesAfterSymbols() {
     let parameters = new VHDLFormatter_2.NewLineSettings();
     parameters.newLineAfter = ["then", ";"];
     parameters.noNewLineAfter = ["port", "generic"];
-    UnitTest5(VHDLFormatter_6.SetNewLinesAfterSymbols, "no new line after comment", parameters, input, expected);
+    UnitTest5(VHDLFormatter_5.SetNewLinesAfterSymbols, "no new line after comment", parameters, input, expected);
     input = "a; b;";
     expected = "a;\r\nb;";
-    UnitTest5(VHDLFormatter_6.SetNewLinesAfterSymbols, "new line after ;", parameters, input, expected);
-}
-function UnitTestApplyNoNewLineAfter() {
-    console.log("=== ApplyNoNewLineAfter ===");
-    let input = ["a;", "b;"];
-    let expected = ["a;@@singleline", "b;@@singleline"];
-    let parameters = [";"];
-    UnitTest4(VHDLFormatter_5.ApplyNoNewLineAfter, "one blankspace", parameters, input, expected);
-    input = ["a;", "b THEN", "c"];
-    expected = ["a;@@singleline", "b THEN@@singleline", "c"];
-    parameters = [";", "then"];
-    UnitTest4(VHDLFormatter_5.ApplyNoNewLineAfter, "one blankspace", parameters, input, expected);
+    UnitTest5(VHDLFormatter_5.SetNewLinesAfterSymbols, "new line after ;", parameters, input, expected);
 }
 function UnitTestRemoveAsserts() {
     console.log("=== RemoveAsserts ===");
@@ -600,8 +612,8 @@ function compareFormattedLines(expected, actual, message) {
     var l = Math.min(actual.length, expected.length);
     let result = "";
     for (var i = 0; i < l; i++) {
-        if (actual[i] instanceof VHDLFormatter_8.FormattedLine) {
-            if (expected[i] instanceof VHDLFormatter_8.FormattedLine) {
+        if (actual[i] instanceof VHDLFormatter_7.FormattedLine) {
+            if (expected[i] instanceof VHDLFormatter_7.FormattedLine) {
                 let compareResult = compareFormattedLine((expected[i]), (actual[i]), message, false);
                 if (compareResult.length > 0) {
                     result += "index " + i + "\n" + compareResult;
@@ -612,7 +624,7 @@ function compareFormattedLines(expected, actual, message) {
             }
         }
         else {
-            if (expected[i] instanceof VHDLFormatter_8.FormattedLine) {
+            if (expected[i] instanceof VHDLFormatter_7.FormattedLine) {
                 result += "index " + i + "\nexpected FormatLine, actual FormattedLine[]. expected:" + (expected[i]).Line;
             }
             else {
@@ -650,25 +662,16 @@ function compareFormattedLine(expected, actual, message, cumulateTestCount) {
         result += 'indents are not equal;\nexpected: "' + expected.Line + '", ' + expected.Indent
             + ';\nactual: "' + actual.Line + '", ' + actual.Indent + "\n";
     }
-    let compareResult = assert_1.CompareString(actual.Line, expected.Line);
-    if (compareResult != true) {
-        result += compareResult;
-    }
+    chai_1.assert.equal(actual.Line, expected.Line);
+    // let compareResult = CompareString(actual.Line, expected.Line);
+    // if (compareResult != true) {
+    // result += compareResult;
+    // }
     return result;
-}
-function assertArray(testName, expected, actual, message) {
-    var result = CompareArray(actual, expected);
-    if (result != true) {
-        console.log(testName + " failed: " + result);
-    }
-    else {
-        //console.log(testName + " pass");
-    }
-    testCount++;
 }
 function UnitTest7(func, testName, indentation, inputs, expected) {
     let actual = func(inputs, indentation);
-    assertArray(testName, expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function UnitTest6(func, testName, parameters, inputs, expected, startIndex, expectedEndIndex, indent) {
     let actual = [];
@@ -676,21 +679,21 @@ function UnitTest6(func, testName, parameters, inputs, expected, startIndex, exp
     if (endIndex != expectedEndIndex) {
         console.log(testName + " failed;\nend index, actual: " + endIndex + "; expected: " + expectedEndIndex);
     }
-    assertFormattedLines(testName, expected, actual);
+    chai_2.expect(actual).to.deep.equal(expected);
 }
 function UnitTest5(func, testName, parameters, inputs, expected) {
     let actual = func(inputs, parameters);
-    assertAndCountTest(testName, expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function UnitTest4(func, testName, parameters, inputs, expected) {
     let actual = JSON.parse(JSON.stringify(inputs));
     func(actual, parameters);
-    assertArray(testName, expected, actual);
+    chai_2.expect(actual).to.deep.equal(expected);
 }
 function UnitTest3(func, testName, inputs, expected) {
     let actual = JSON.parse(JSON.stringify(inputs));
     func(actual);
-    assertArray(testName, expected, actual);
+    chai_2.expect(actual).to.deep.equal(expected);
 }
 function deepCopy(objectToCopy) {
     return (JSON.parse(JSON.stringify(objectToCopy)));
@@ -704,87 +707,87 @@ function IntegrationTest() {
     let input = "architecture TB of TB_CPU is\r\n    component CPU_IF\r\n    port   -- port list\r\n    end component;\r\n    signal CPU_DATA_VALID: std_ulogic;\r\n    signal CLK, RESET: std_ulogic := '0';\r\n    constant PERIOD : time := 10 ns;\r\n    constant MAX_SIM: time := 50 * PERIOD;\r\n    begin\r\n    -- concurrent statements\r\n    end TB;";
     let expected = "ARCHITECTURE TB OF TB_CPU IS\r\n    COMPONENT CPU_IF\r\n        PORT -- port list\r\n    END COMPONENT;\r\n    SIGNAL CPU_DATA_VALID : std_ulogic;\r\n    SIGNAL CLK, RESET : std_ulogic := '0';\r\n    CONSTANT PERIOD : TIME := 10 ns;\r\n    CONSTANT MAX_SIM : TIME := 50 * PERIOD;\r\nBEGIN\r\n    -- concurrent statements\r\nEND TB;";
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("General", expected, actual);
+    chai_1.assert.equal(actual, expected);
     IntegrationTest2();
     let new_line_after_symbols_2 = new VHDLFormatter_2.NewLineSettings();
     new_line_after_symbols_2.newLineAfter = [];
     new_line_after_symbols_2.noNewLineAfter = ["then", ";", "generic", "port"];
-    let newSettings = deepCopy(settings);
+    let newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.NewLineSettings = new_line_after_symbols_2;
     expected = "a; b; c;";
     input = "a; \r\nb;\r\n c;";
     actual = VHDLFormatter_1.beautify(input, newSettings);
-    assertAndCountTest("Remove line after ;", expected, actual);
-    newSettings = deepCopy(settings);
+    chai_1.assert.equal(actual, expected);
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.RemoveAsserts = true;
     input = "architecture arch of ent is\r\nbegin\r\n    assert False report sdfjcsdfcsdj;\r\n    assert False report sdfjcsdfcsdj severity note;\r\nend architecture;";
     expected = "ARCHITECTURE arch OF ent IS\r\nBEGIN\r\nEND ARCHITECTURE;";
     actual = VHDLFormatter_1.beautify(input, newSettings);
-    assertAndCountTest("Remove asserts", expected, actual);
+    chai_1.assert.equal(actual, expected);
     input = "entity TB_DISPLAY is\r\n-- port declarations\r\nend TB_DISPLAY;\r\n\r\narchitecture TEST of TB_DISPLAY is\r\n-- signal declarations\r\nbegin\r\n-- component instance(s)\r\nend TEST;";
     expected = "ENTITY TB_DISPLAY IS\r\n    -- port declarations\r\nEND TB_DISPLAY;\r\n\r\nARCHITECTURE TEST OF TB_DISPLAY IS\r\n    -- signal declarations\r\nBEGIN\r\n    -- component instance(s)\r\nEND TEST;";
     actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("ENTITY ARCHITECTURE", expected, actual);
+    chai_1.assert.equal(actual, expected);
     IntegrationTest5();
     IntegrationTest6();
     IntegrationTest7();
     input = 'if a(3 downto 0) > "0100" then\r\na(3 downto 0) := a(3 downto 0) + "0011" ;\r\nend if ;';
     expected = 'IF a(3 DOWNTO 0) > "0100" THEN\r\n    a(3 DOWNTO 0) := a(3 DOWNTO 0) + "0011";\r\nEND IF;';
     actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("IF END IF case 1", expected, actual);
+    chai_1.assert.equal(actual, expected);
     input = "if s = '1' then\r\no <= \"010\";\r\nelse\r\no <= \"101\";\r\nend if;";
     expected = "IF s = '1' THEN\r\n    o <= \"010\";\r\nELSE\r\n    o <= \"101\";\r\nEND IF;";
     actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("IF ELSE END IF case 1", expected, actual);
-    newSettings = deepCopy(settings);
+    chai_1.assert.equal(actual, expected);
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.NewLineSettings.newLineAfter.push("ELSE");
     input = "IF (s = r) THEN rr := '0'; ELSE rr := '1'; END IF;";
     expected = "IF (s = r) THEN\r\n    rr := '0';\r\nELSE\r\n    rr := '1';\r\nEND IF;";
     actual = VHDLFormatter_1.beautify(input, newSettings);
-    assertAndCountTest("IF ELSE END IF case 2", expected, actual);
+    chai_1.assert.equal(actual, expected);
     input = 'P1:process\r\nvariable x: Integer range 1 to 3;\r\nvariable y: BIT_VECTOR (0 to 1);\r\nbegin\r\n  C1: case x is\r\n      when 1 => Out_1 <= 0;\r\n      when 2 => Out_1 <= 1;\r\n  end case C1;\r\n  C2: case y is\r\n      when "00" => Out_2 <= 0;\r\n      when "01" => Out_2 <= 1;\r\n  end case C2;\r\nend process;';
     expected = 'P1 : PROCESS\r\n    VARIABLE x : INTEGER RANGE 1 TO 3;\r\n    VARIABLE y : BIT_VECTOR (0 TO 1);\r\nBEGIN\r\n    C1 : CASE x IS\r\n        WHEN 1 => Out_1 <= 0;\r\n        WHEN 2 => Out_1 <= 1;\r\n    END CASE C1;\r\n    C2 : CASE y IS\r\n        WHEN "00" => Out_2 <= 0;\r\n        WHEN "01" => Out_2 <= 1;\r\n    END CASE C2;\r\nEND PROCESS;';
     actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("WHEN CASE", expected, actual);
+    chai_1.assert.equal(actual, expected);
     input = "case READ_CPU_STATE is\r\n  when WAITING =>\r\n    if CPU_DATA_VALID = '1' then\r\n      CPU_DATA_READ  <= '1';\r\n      READ_CPU_STATE <= DATA1;\r\n    end if;\r\n  when DATA1 =>\r\n    -- etc.\r\nend case;";
     expected = "CASE READ_CPU_STATE IS\r\n    WHEN WAITING =>\r\n        IF CPU_DATA_VALID = '1' THEN\r\n            CPU_DATA_READ <= '1';\r\n            READ_CPU_STATE <= DATA1;\r\n        END IF;\r\n    WHEN DATA1 =>\r\n        -- etc.\r\nEND CASE;";
     actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("WHEN CASE & IF", expected, actual);
-    input = "entity aa is\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
-    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\nEND;";
+    chai_1.assert.equal(actual, expected);
+    input = "entity aa is\r\n    port (a : in STD_LOGIC;\r\n          b : in STD_LOGIC;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in STD_LOGIC;\r\n         b : in STD_LOGIC;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
+    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN STD_LOGIC;\r\n        b : IN STD_LOGIC;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN STD_LOGIC;\r\n            b : IN STD_LOGIC;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\nEND;";
     actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("PORT MAP", expected, actual);
-    input = "entity aa is\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\n  D : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
-    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\n    D : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\nEND;";
+    chai_1.assert.equal(actual, expected);
+    input = "entity aa is\r\n    port (a : in STD_LOGIC;\r\n          b : in STD_LOGIC;\r\n         );\r\n    port (a : in STD_LOGIC;\r\n          b : in STD_LOGIC;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in STD_LOGIC;\r\n         b : in STD_LOGIC;\r\n        );\r\n    port(\r\n         a : in STD_LOGIC;\r\n         b : in STD_LOGIC;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\n  D : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
+    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN STD_LOGIC;\r\n        b : IN STD_LOGIC;\r\n    );\r\n    PORT (\r\n        a : IN STD_LOGIC;\r\n        b : IN STD_LOGIC;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN STD_LOGIC;\r\n            b : IN STD_LOGIC;\r\n        );\r\n        PORT (\r\n            a : IN STD_LOGIC;\r\n            b : IN STD_LOGIC;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\n    D : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\nEND;";
     actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("Multiple PORT MAPs", expected, actual);
-    input = "port (a : in std_logic;\r\n b : in std_logic;\r\n);";
-    expected = "PORT\r\n(\r\n    a : IN std_logic;\r\n    b : IN std_logic;\r\n);";
+    chai_1.assert.equal(actual, expected);
+    input = "port (a : in STD_LOGIC;\r\n b : in STD_LOGIC;\r\n);";
+    expected = "PORT\r\n(\r\n    a : IN STD_LOGIC;\r\n    b : IN STD_LOGIC;\r\n);";
     new_line_after_symbols_2 = new VHDLFormatter_2.NewLineSettings();
     new_line_after_symbols_2.newLineAfter = ["then", ";", "generic", "port"];
-    newSettings = deepCopy(settings);
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.NewLineSettings = new_line_after_symbols_2;
     actual = VHDLFormatter_1.beautify(input, newSettings);
-    assertAndCountTest("New line after PORT", expected, actual);
-    newSettings = deepCopy(settings);
+    chai_1.assert.equal(actual, expected);
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.NewLineSettings.newLineAfter = [];
     input = "component a is\r\nport( Data : inout Std_Logic_Vector(7 downto 0););\r\nend component a;";
-    expected = "COMPONENT a IS\r\n    PORT (Data : INOUT Std_Logic_Vector(7 DOWNTO 0););\r\nEND COMPONENT a;";
+    expected = "COMPONENT a IS\r\n    PORT (Data : INOUT STD_LOGIC_VECTOR(7 DOWNTO 0););\r\nEND COMPONENT a;";
     actual = VHDLFormatter_1.beautify(input, newSettings);
-    assertAndCountTest("New line after PORT (single line)", expected, actual);
+    chai_1.assert.equal(actual, expected);
     //IntegrationTest20();
     input = "architecture a of b is\r\nbegin\r\n    process (w)\r\n    variable t : std_logic_vector (4 downto 0) ;\r\nbegin\r\n    a := (others => '0') ;\r\nend process ;\r\nend a;";
-    expected = "ARCHITECTURE a OF b IS\r\nBEGIN\r\n    PROCESS (w)\r\n        VARIABLE t : std_logic_vector (4 DOWNTO 0);\r\n    BEGIN\r\n        a := (OTHERS => '0');\r\n    END PROCESS;\r\nEND a;";
+    expected = "ARCHITECTURE a OF b IS\r\nBEGIN\r\n    PROCESS (w)\r\n        VARIABLE t : STD_LOGIC_VECTOR (4 DOWNTO 0);\r\n    BEGIN\r\n        a := (OTHERS => '0');\r\n    END PROCESS;\r\nEND a;";
     actual = VHDLFormatter_1.beautify(input, newSettings);
-    assertAndCountTest("Double BEGIN", expected, actual);
-    let newSettings2 = deepCopy(newSettings);
-    newSettings2.SignAlignSettings = new VHDLFormatter_1.signAlignSettings(false, true, "", []);
-    newSettings2.NewLineSettings.newLineAfter = ["then", ";", "generic", "port"];
-    newSettings2.NewLineSettings.noNewLineAfter = [];
+    chai_1.assert.equal(actual, expected);
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
+    newSettings.SignAlignSettings = new VHDLFormatter_1.signAlignSettings(false, true, "", []);
+    newSettings.NewLineSettings.newLineAfter = ["then", ";", "generic", "port"];
+    newSettings.NewLineSettings.noNewLineAfter = [];
     input = "entity a is\r\n    port ( w  : in  std_logic_vector (7 downto 0) ;\r\n           w_s : out std_logic_vector (3 downto 0) ; ) ;\r\nend a ;\r\narchitecture b of a is\r\nbegin\r\n    process ( w )\r\n    variable t : std_logic_vector (4 downto 0) ;\r\n    variable bcd     : std_logic_vector (11 downto 0) ;\r\nbegin\r\n    b(2 downto 0) := w(7 downto 5) ;\r\n    t         := w(4 downto 0) ;\r\n    w_s <= b(11 downto 8) ;\r\n    w <= b(3  downto 0) ;\r\nend process ;\r\nend b ;";
-    expected = "ENTITY a IS\r\n    PORT\r\n    (\r\n        w   : IN std_logic_vector (7 DOWNTO 0);\r\n        w_s : OUT std_logic_vector (3 DOWNTO 0);\r\n    );\r\nEND a;\r\nARCHITECTURE b OF a IS\r\nBEGIN\r\n    PROCESS (w)\r\n        VARIABLE t   : std_logic_vector (4 DOWNTO 0);\r\n        VARIABLE bcd : std_logic_vector (11 DOWNTO 0);\r\n    BEGIN\r\n        b(2 DOWNTO 0) := w(7 DOWNTO 5);\r\n        t             := w(4 DOWNTO 0);\r\n        w_s <= b(11 DOWNTO 8);\r\n        w   <= b(3 DOWNTO 0);\r\n    END PROCESS;\r\nEND b;";
-    actual = VHDLFormatter_1.beautify(input, newSettings2);
-    assertAndCountTest("Align signs in all places", expected, actual);
+    expected = "ENTITY a IS\r\n    PORT\r\n    (\r\n        w   : IN STD_LOGIC_VECTOR (7 DOWNTO 0);\r\n        w_s : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);\r\n    );\r\nEND a;\r\nARCHITECTURE b OF a IS\r\nBEGIN\r\n    PROCESS (w)\r\n        VARIABLE t   : STD_LOGIC_VECTOR (4 DOWNTO 0);\r\n        VARIABLE bcd : STD_LOGIC_VECTOR (11 DOWNTO 0);\r\n    BEGIN\r\n        b(2 DOWNTO 0) := w(7 DOWNTO 5);\r\n        t             := w(4 DOWNTO 0);\r\n        w_s <= b(11 DOWNTO 8);\r\n        w   <= b(3 DOWNTO 0);\r\n    END PROCESS;\r\nEND b;";
+    actual = VHDLFormatter_1.beautify(input, newSettings);
+    chai_1.assert.equal(actual, expected);
     IntegrationTest23();
     IntegrationTest24();
     IntegrationTest25();
@@ -948,7 +951,7 @@ function IntegrationTest39() {
     let input = 'assert v /  = ( X  "01", X  "02" )  ;';
     let expected = 'ASSERT v /= (X "01", X "02");';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("signs", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest40() {
     let settings = GetDefaultSettings();
@@ -979,7 +982,7 @@ function IntegrationTest44() {
     let input = 'REPORT\n"A_ARITH_MOD_tester.main Tester is now ready. A total of " &\nINTEGER\'image(totalTests) & " tests have been detected.";';
     let expected = 'REPORT\r\n	"A_ARITH_MOD_tester.main Tester is now ready. A total of " &\r\n	INTEGER\'image(totalTests) & " tests have been detected.";';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("ingore keywords in quotes", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest45() {
     let settings = GetDefaultSettings();
@@ -989,7 +992,7 @@ function IntegrationTest45() {
     let input = 'REPORT\n"A_ARITH_MOD_tester.main Tester is now ready. A total OF " &\nINTEGER\'image(totalTests) & " tests have been detected.";';
     let expected = 'report\r\n	"A_ARITH_MOD_tester.main Tester is now ready. A total OF " &\r\n	integer\'image(totalTests) & " tests have been detected.";';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("ingore keywords in quotes & convert to lowercase", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest46() {
     let settings = GetDefaultSettings();
@@ -1036,7 +1039,7 @@ function IntegrationTest51() {
     let input = 'architecture behaviour of a is\r\nbegin\r\n    main : process\r\n        variable b : e := (others => DR_INIT);\r\n        variable c, d : positive := 8;\r\n    begin\r\n    end process main;\r\nend architecture behaviour;';
     let expected = 'ARCHITECTURE behaviour OF a IS\r\nBEGIN\r\n    main : PROCESS\r\n        VARIABLE b    : e        := (OTHERS => DR_INIT);\r\n        VARIABLE c, d : POSITIVE := 8;\r\n    BEGIN\r\n    END PROCESS main;\r\nEND ARCHITECTURE behaviour;';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("process with name", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest52() {
     let settings = GetDefaultSettings();
@@ -1108,7 +1111,7 @@ function IntegrationTest61() {
     let input = 'port\r\nmap(\r\na => a(i)\r\n);';
     let expected = 'PORT MAP\r\n(\r\n    a => a(i)\r\n);';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("port new line map", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest62() {
     let settings = GetDefaultSettings();
@@ -1116,7 +1119,7 @@ function IntegrationTest62() {
     let input = 'port map(\r\na => a(i)\r\n);';
     let expected = 'PORT MAP\r\n(\r\n    a => a(i)\r\n);';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("port map new line", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest63() {
     let settings = GetDefaultSettings();
@@ -1124,14 +1127,14 @@ function IntegrationTest63() {
     let input = 'reg : a PORT\r\nMAP(\r\nb => c(i)\r\n);';
     let expected = 'reg : a PORT MAP\r\n(\r\n    b => c(i)\r\n);';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("port map new line 2", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest64() {
     let settings = GetDefaultSettings();
     let input = 'reg : a PORT\r\nMAP(\r\nb => c(i)\r\n);';
     let expected = 'reg : a PORT MAP(\r\n    b => c(i)\r\n);';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("port map no new line", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest65() {
     let settings = GetDefaultSettings();
@@ -1139,7 +1142,7 @@ function IntegrationTest65() {
     let input = 'reg : a PORT\r\nMAP\r\n(\r\nb => c(i)\r\n);';
     let expected = 'reg : a PORT MAP(\r\n    b => c(i)\r\n);';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("port map no new line 2", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest66() {
     let settings = GetDefaultSettings();
@@ -1147,49 +1150,49 @@ function IntegrationTest66() {
     let input = 'component a is\r\n      generic (b\r\n         );\r\n      port (\r\n          c\r\n	 );\r\n    end component;\r\n-- anything1\r\n-- anything2';
     let expected = 'COMPONENT a IS\r\n    GENERIC (\r\n        b\r\n    );\r\n    PORT (\r\n        c\r\n    );\r\nEND COMPONENT;\r\n-- anything1\r\n-- anything2';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("component generic", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest67() {
     let settings = GetDefaultSettings();
     let input = 'type STATE_TYPE is (\r\n      A,\r\nB,\r\n    C);\r\nA';
     let expected = 'TYPE STATE_TYPE IS (\r\n    A,\r\n    B,\r\n    C);\r\nA';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("multiline enumerated type is", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest68() {
     let settings = GetDefaultSettings();
     let input = 'type STATE_TYPE is (A,  B, C);\r\nA';
     let expected = 'TYPE STATE_TYPE IS (A, B, C);\r\nA';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("single line enumerated type is", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest69() {
     let settings = GetDefaultSettings();
     let input = 'type STATE_TYPE is (\r\n      A,\r\nB,\r\n    C\r\n);\r\nA';
     let expected = 'TYPE STATE_TYPE IS (\r\n    A,\r\n    B,\r\n    C\r\n);\r\nA';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("multiline enumerated type is", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest70() {
     let settings = GetDefaultSettings();
     let input = 'test\r\n        := test';
     let expected = 'test\r\n:= test';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("multiline assignment", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest71() {
     let settings = GetDefaultSettings();
     let input = 'VARIABLE \\#$)!?\\ : INTEGER;\r\nVARIABLE \\try this in verilog\\ : BIT;\r\nVARIABLE \\Buffer\\ : BIT;';
     let expected = 'VARIABLE \\#$)!?\\ : INTEGER;\r\nVARIABLE \\try this in verilog\\ : BIT;\r\nVARIABLE \\Buffer\\ : BIT;';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("backslash, extended indentifier", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest72() {
     let settings = GetDefaultSettings();
     let input = 'test := 12e+6';
     let expected = 'test := 12e+6';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("scientific notation", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest73() {
     let settings = GetDefaultSettings();
@@ -1204,7 +1207,7 @@ function IntegrationTest74() {
     let input = 'test := test;\ntest := test;';
     let expected = 'test := test; EOF test := test;';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("end of line 2", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest75() {
     let settings = GetDefaultSettings();
@@ -1212,7 +1215,7 @@ function IntegrationTest75() {
     let input = 'test := loooong; -- test\r\ntest := short; -- test';
     let expected = 'test := loooong; -- test\r\ntest := short;   -- test';
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("align comments", expected, actual);
+    chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest76() {
     let settings = GetDefaultSettings();
@@ -1329,10 +1332,10 @@ function IntegrationTest7() {
     new_line_after_symbols.newLineAfter = ["then", ";"];
     let settings = getDefaultBeautifierSettings(new_line_after_symbols);
     settings.SignAlignSettings = new VHDLFormatter_1.signAlignSettings(true, false, "global", ["PORT", "GENERIC"]);
-    let input = "entity p is\r\n  generic\r\n  (\r\n    -- INCLK\r\n    INCLK0_INPUT_FREQUENCY  : natural;\r\n\r\n    -- CLK1\r\n    CLK1_DIVIDE_BY          : natural := 1;\r\n    CLK1_MULTIPLY_BY        : unnatural:= 1;\r\n    CLK1_PHASE_SHIFT        : string := \"0\"\r\n  );\r\n	port\r\n	(\r\n		inclk0	: in std_logic  := '0';\r\n		c0		    : out std_logic ;\r\n		c1		    : out std_logic \r\n	);\r\nEND pll;";
-    let expected = "ENTITY p IS\r\n    GENERIC (\r\n        -- INCLK\r\n        INCLK0_INPUT_FREQUENCY : NATURAL;\r\n\r\n        -- CLK1\r\n        CLK1_DIVIDE_BY         : NATURAL   := 1;\r\n        CLK1_MULTIPLY_BY       : unnatural := 1;\r\n        CLK1_PHASE_SHIFT       : STRING    := \"0\"\r\n    );\r\n    PORT (\r\n        inclk0 : IN std_logic := '0';\r\n        c0     : OUT std_logic;\r\n        c1     : OUT std_logic\r\n    );\r\nEND pll;";
+    let input = "entity p is\r\n  generic\r\n  (\r\n    -- INCLK\r\n    INCLK0_INPUT_FREQUENCY  : natural;\r\n\r\n    -- CLK1\r\n    CLK1_DIVIDE_BY          : natural := 1;\r\n    CLK1_MULTIPLY_BY        : unnatural:= 1;\r\n    CLK1_PHASE_SHIFT        : string := \"0\"\r\n  );\r\n	port\r\n	(\r\n		inclk0	: in STD_LOGIC  := '0';\r\n		c0		    : out STD_LOGIC ;\r\n		c1		    : out STD_LOGIC \r\n	);\r\nEND pll;";
+    let expected = "ENTITY p IS\r\n    GENERIC (\r\n        -- INCLK\r\n        INCLK0_INPUT_FREQUENCY : NATURAL;\r\n\r\n        -- CLK1\r\n        CLK1_DIVIDE_BY         : NATURAL   := 1;\r\n        CLK1_MULTIPLY_BY       : unnatural := 1;\r\n        CLK1_PHASE_SHIFT       : STRING    := \"0\"\r\n    );\r\n    PORT (\r\n        inclk0 : IN STD_LOGIC := '0';\r\n        c0     : OUT STD_LOGIC;\r\n        c1     : OUT STD_LOGIC\r\n    );\r\nEND pll;";
     let actual = VHDLFormatter_1.beautify(input, settings);
-    assertAndCountTest("Sign align in PORT & GENERIC", expected, actual);
+    return chai_1.assert.equal(actual, expected);
 }
 function IntegrationTest2() {
     let new_line_after_symbols = new VHDLFormatter_2.NewLineSettings();
@@ -1347,28 +1350,6 @@ function IntegrationTest2() {
 }
 function assertAndCountTest(testName, expected, actual, message) {
     testCount++;
-    return assert_2.assert(testName, expected, actual, message);
-}
-function CompareArray(actual, expected) {
-    var l = Math.min(actual.length, expected.length);
-    let result = "";
-    for (var i = 0; i < l; i++) {
-        if (actual[i] != expected[i]) {
-            result += assert_1.CompareString(actual[i], expected[i]) + "\n";
-        }
-    }
-    if (actual.length > expected.length) {
-        result += "actual has more items";
-        for (var i = expected.length; i < actual.length; i++) {
-            result += "actual[" + i + "] = " + actual[i];
-        }
-    }
-    else if (actual.length < expected.length) {
-        result += "expected has more items";
-        for (var i = actual.length; i < expected.length; i++) {
-            result += "expected[" + i + "] = " + expected[i];
-        }
-    }
-    return true;
+    return chai_1.assert.equal(actual, expected);
 }
 //# sourceMappingURL=VHDLFormatterUnitTests.js.map

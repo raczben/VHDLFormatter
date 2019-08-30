@@ -286,7 +286,6 @@ export function beautify(input: string, settings: BeautifierSettings) {
     if (newLineSettings != null) {
         input = SetNewLinesAfterSymbols(input, newLineSettings);
         arr = input.split("\r\n");
-        ApplyNoNewLineAfter(arr, newLineSettings.noNewLineAfter);
         input = arr.join("\r\n");
     }
 
@@ -766,20 +765,6 @@ function ReserveSemicolonInKeywords(arr: Array<string>) {
         if (arr[i].match(/FUNCTION|PROCEDURE/) != null) {
             arr[i] = arr[i].replace(/;/g, ILSemicolon);
         }
-    }
-}
-
-export function ApplyNoNewLineAfter(arr: Array<string>, noNewLineAfter: Array<string>) {
-    if (noNewLineAfter == null) {
-        return;
-    }
-    for (let i = 0; i < arr.length; i++) {
-        noNewLineAfter.forEach(n => {
-            let regex = new RegExp("(" + n.toUpperCase + ")[ a-z0-9]+[a-z0-9]+");
-            if (arr[i].regexIndexOf(regex) >= 0) {
-                arr[i] += "@@singleline";
-            }
-        });
     }
 }
 

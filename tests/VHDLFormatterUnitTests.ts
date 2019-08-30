@@ -2,7 +2,6 @@ import { beautify, signAlignSettings } from "../VHDLFormatter";
 import { NewLineSettings } from "../VHDLFormatter";
 import { BeautifierSettings } from "../VHDLFormatter";
 import { RemoveAsserts } from "../VHDLFormatter";
-import { ApplyNoNewLineAfter } from "../VHDLFormatter";
 import { SetNewLinesAfterSymbols } from "../VHDLFormatter";
 import { beautify3 } from "../VHDLFormatter";
 import { FormattedLine } from "../VHDLFormatter";
@@ -26,9 +25,6 @@ describe('test', function() {
   it('UnitTestRemoveAsserts', function() {
     UnitTestRemoveAsserts();
   }); 
-  it('UnitTestApplyNoNewLineAfter', function() {
-    UnitTestApplyNoNewLineAfter();
-  }); 
   it('UnitTestSetNewLinesAfterSymbols', function() {
     UnitTestSetNewLinesAfterSymbols();
   }); 
@@ -51,7 +47,6 @@ if (showUnitTests) {
     IntegrationTest();
 
     UnitTestRemoveAsserts();
-    UnitTestApplyNoNewLineAfter();
     UnitTestSetNewLinesAfterSymbols();
     UnitTestFormattedLineToString();
     UnitTestbeautify3();
@@ -640,19 +635,6 @@ function UnitTestSetNewLinesAfterSymbols() {
     UnitTest5(SetNewLinesAfterSymbols, "new line after ;", parameters, input, expected);
 }
 
-function UnitTestApplyNoNewLineAfter() {
-    console.log("=== ApplyNoNewLineAfter ===");
-    let input: Array<string> = ["a;", "b;"];
-    let expected: Array<string> = ["a;@@singleline", "b;@@singleline"];
-    let parameters: Array<string> = [";"];
-    UnitTest4(ApplyNoNewLineAfter, "one blankspace", parameters, input, expected);
-
-    input = ["a;", "b THEN", "c"];
-    expected = ["a;@@singleline", "b THEN@@singleline", "c"];
-    parameters = [";", "then"];
-    UnitTest4(ApplyNoNewLineAfter, "one blankspace", parameters, input, expected);
-}
-
 function UnitTestRemoveAsserts() {
     console.log("=== RemoveAsserts ===");
     let input: Array<string> = ["ASSERT a;"];
@@ -728,19 +710,6 @@ function compareFormattedLine(expected: FormattedLine, actual: FormattedLine, me
     return result;
 }
 
-
-
-function assertArray(testName, expected, actual, message?) {
-    var result = CompareArray(actual, expected);
-    if (result != true) {
-        console.log(testName + " failed: " + result);
-    }
-    else {
-        //console.log(testName + " pass");
-    }
-    testCount++;
-}
-
 type StringCallback = (text: string) => string;
 
 type ArrayCallback = (arr: Array<string>) => void;
@@ -755,7 +724,7 @@ type FormattedLinesCallback = (inputs: (FormattedLine | FormattedLine[])[], inde
 
 function UnitTest7(func: FormattedLinesCallback, testName: string, indentation: string, inputs: (FormattedLine | FormattedLine[])[], expected: Array<string>) {
     let actual = func(inputs, indentation);
-    assert.equal(expected, actual);
+    assert.equal(actual, expected);
 }
 
 function UnitTest6(func: BeautifyCallback, testName: string, parameters: BeautifierSettings, inputs: Array<string>, expected: (FormattedLine | FormattedLine[])[], startIndex: number, expectedEndIndex: number, indent: number) {
@@ -770,19 +739,19 @@ function UnitTest6(func: BeautifyCallback, testName: string, parameters: Beautif
 
 function UnitTest5(func: String2Callback, testName: string, parameters: NewLineSettings, inputs, expected: string) {
     let actual: string = func(inputs, parameters);
-    assertAndCountTest(testName, expected, actual);
+    assert.equal(actual, expected);
 }
 
 function UnitTest4(func: Array2Callback, testName: string, parameters: Array<string>, inputs: Array<string>, expected: Array<string>) {
     let actual = JSON.parse(JSON.stringify(inputs));
     func(actual, parameters);
-    assert(expected, actual);
+    expect(actual).to.deep.equal(expected);
 }
 
 function UnitTest3(func: ArrayCallback, testName: string, inputs: Array<string>, expected: Array<string>) {
     let actual = JSON.parse(JSON.stringify(inputs));
     func(actual);
-    assert(expected, actual);
+    expect(actual).to.deep.equal(expected);
 }
 
 function deepCopy(objectToCopy: BeautifierSettings): BeautifierSettings {
@@ -799,31 +768,31 @@ function IntegrationTest() {
     let input = "architecture TB of TB_CPU is\r\n    component CPU_IF\r\n    port   -- port list\r\n    end component;\r\n    signal CPU_DATA_VALID: std_ulogic;\r\n    signal CLK, RESET: std_ulogic := '0';\r\n    constant PERIOD : time := 10 ns;\r\n    constant MAX_SIM: time := 50 * PERIOD;\r\n    begin\r\n    -- concurrent statements\r\n    end TB;"
     let expected = "ARCHITECTURE TB OF TB_CPU IS\r\n    COMPONENT CPU_IF\r\n        PORT -- port list\r\n    END COMPONENT;\r\n    SIGNAL CPU_DATA_VALID : std_ulogic;\r\n    SIGNAL CLK, RESET : std_ulogic := '0';\r\n    CONSTANT PERIOD : TIME := 10 ns;\r\n    CONSTANT MAX_SIM : TIME := 50 * PERIOD;\r\nBEGIN\r\n    -- concurrent statements\r\nEND TB;";
     let actual = beautify(input, settings);
-    assertAndCountTest("General", expected, actual);
+    assert.equal(actual, expected);
 
     IntegrationTest2();
 
     let new_line_after_symbols_2: NewLineSettings = new NewLineSettings();
     new_line_after_symbols_2.newLineAfter = [];
     new_line_after_symbols_2.noNewLineAfter = ["then", ";", "generic", "port"];
-    let newSettings = deepCopy(settings);
+    let newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.NewLineSettings = new_line_after_symbols_2;
     expected = "a; b; c;";
     input = "a; \r\nb;\r\n c;"
     actual = beautify(input, newSettings);
-    assertAndCountTest("Remove line after ;", expected, actual);
+    assert.equal(actual, expected);
 
-    newSettings = deepCopy(settings);
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.RemoveAsserts = true;
     input = "architecture arch of ent is\r\nbegin\r\n    assert False report sdfjcsdfcsdj;\r\n    assert False report sdfjcsdfcsdj severity note;\r\nend architecture;";
     expected = "ARCHITECTURE arch OF ent IS\r\nBEGIN\r\nEND ARCHITECTURE;"
     actual = beautify(input, newSettings);
-    assertAndCountTest("Remove asserts", expected, actual);
+    assert.equal(actual, expected);
 
     input = "entity TB_DISPLAY is\r\n-- port declarations\r\nend TB_DISPLAY;\r\n\r\narchitecture TEST of TB_DISPLAY is\r\n-- signal declarations\r\nbegin\r\n-- component instance(s)\r\nend TEST;";
     expected = "ENTITY TB_DISPLAY IS\r\n    -- port declarations\r\nEND TB_DISPLAY;\r\n\r\nARCHITECTURE TEST OF TB_DISPLAY IS\r\n    -- signal declarations\r\nBEGIN\r\n    -- component instance(s)\r\nEND TEST;";
     actual = beautify(input, settings);
-    assertAndCountTest("ENTITY ARCHITECTURE", expected, actual);
+    assert.equal(actual, expected);
 
     IntegrationTest5();
     IntegrationTest6();
@@ -832,71 +801,71 @@ function IntegrationTest() {
     input = 'if a(3 downto 0) > "0100" then\r\na(3 downto 0) := a(3 downto 0) + "0011" ;\r\nend if ;';
     expected = 'IF a(3 DOWNTO 0) > "0100" THEN\r\n    a(3 DOWNTO 0) := a(3 DOWNTO 0) + "0011";\r\nEND IF;';
     actual = beautify(input, settings);
-    assertAndCountTest("IF END IF case 1", expected, actual);
+    assert.equal(actual, expected);
 
     input = "if s = '1' then\r\no <= \"010\";\r\nelse\r\no <= \"101\";\r\nend if;";
     expected = "IF s = '1' THEN\r\n    o <= \"010\";\r\nELSE\r\n    o <= \"101\";\r\nEND IF;";
     actual = beautify(input, settings);
-    assertAndCountTest("IF ELSE END IF case 1", expected, actual);
+    assert.equal(actual, expected);
 
-    newSettings = deepCopy(settings);
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.NewLineSettings.newLineAfter.push("ELSE");
     input = "IF (s = r) THEN rr := '0'; ELSE rr := '1'; END IF;";
     expected = "IF (s = r) THEN\r\n    rr := '0';\r\nELSE\r\n    rr := '1';\r\nEND IF;";
     actual = beautify(input, newSettings);
-    assertAndCountTest("IF ELSE END IF case 2", expected, actual);
+    assert.equal(actual, expected);
 
     input = 'P1:process\r\nvariable x: Integer range 1 to 3;\r\nvariable y: BIT_VECTOR (0 to 1);\r\nbegin\r\n  C1: case x is\r\n      when 1 => Out_1 <= 0;\r\n      when 2 => Out_1 <= 1;\r\n  end case C1;\r\n  C2: case y is\r\n      when "00" => Out_2 <= 0;\r\n      when "01" => Out_2 <= 1;\r\n  end case C2;\r\nend process;';
     expected = 'P1 : PROCESS\r\n    VARIABLE x : INTEGER RANGE 1 TO 3;\r\n    VARIABLE y : BIT_VECTOR (0 TO 1);\r\nBEGIN\r\n    C1 : CASE x IS\r\n        WHEN 1 => Out_1 <= 0;\r\n        WHEN 2 => Out_1 <= 1;\r\n    END CASE C1;\r\n    C2 : CASE y IS\r\n        WHEN "00" => Out_2 <= 0;\r\n        WHEN "01" => Out_2 <= 1;\r\n    END CASE C2;\r\nEND PROCESS;';
     actual = beautify(input, settings);
-    assertAndCountTest("WHEN CASE", expected, actual);
+    assert.equal(actual, expected);
 
     input = "case READ_CPU_STATE is\r\n  when WAITING =>\r\n    if CPU_DATA_VALID = '1' then\r\n      CPU_DATA_READ  <= '1';\r\n      READ_CPU_STATE <= DATA1;\r\n    end if;\r\n  when DATA1 =>\r\n    -- etc.\r\nend case;";
     expected = "CASE READ_CPU_STATE IS\r\n    WHEN WAITING =>\r\n        IF CPU_DATA_VALID = '1' THEN\r\n            CPU_DATA_READ <= '1';\r\n            READ_CPU_STATE <= DATA1;\r\n        END IF;\r\n    WHEN DATA1 =>\r\n        -- etc.\r\nEND CASE;";
     actual = beautify(input, settings);
-    assertAndCountTest("WHEN CASE & IF", expected, actual);
+    assert.equal(actual, expected);
 
-    input = "entity aa is\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
-    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\nEND;";
+    input = "entity aa is\r\n    port (a : in STD_LOGIC;\r\n          b : in STD_LOGIC;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in STD_LOGIC;\r\n         b : in STD_LOGIC;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
+    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN STD_LOGIC;\r\n        b : IN STD_LOGIC;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN STD_LOGIC;\r\n            b : IN STD_LOGIC;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\nEND;";
     actual = beautify(input, settings);
-    assertAndCountTest("PORT MAP", expected, actual);
+    assert.equal(actual, expected);
 
-    input = "entity aa is\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\n    port (a : in std_logic;\r\n          b : in std_logic;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    port(\r\n         a : in std_logic;\r\n         b : in std_logic;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\n  D : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
-    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\n    PORT (\r\n        a : IN std_logic;\r\n        b : IN std_logic;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n        PORT (\r\n            a : IN std_logic;\r\n            b : IN std_logic;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\n    D : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\nEND;";
+    input = "entity aa is\r\n    port (a : in STD_LOGIC;\r\n          b : in STD_LOGIC;\r\n         );\r\n    port (a : in STD_LOGIC;\r\n          b : in STD_LOGIC;\r\n         );\r\nend aa;\r\narchitecture bb of aa is\r\n   component cc\r\n    port(\r\n         a : in STD_LOGIC;\r\n         b : in STD_LOGIC;\r\n        );\r\n    port(\r\n         a : in STD_LOGIC;\r\n         b : in STD_LOGIC;\r\n        );\r\n    end cc;\r\n\r\nbegin\r\n  C : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\n  D : cc port map (\r\n          long => a,\r\n          b => b\r\n        );\r\nend;";
+    expected = "ENTITY aa IS\r\n    PORT (\r\n        a : IN STD_LOGIC;\r\n        b : IN STD_LOGIC;\r\n    );\r\n    PORT (\r\n        a : IN STD_LOGIC;\r\n        b : IN STD_LOGIC;\r\n    );\r\nEND aa;\r\nARCHITECTURE bb OF aa IS\r\n    COMPONENT cc\r\n        PORT (\r\n            a : IN STD_LOGIC;\r\n            b : IN STD_LOGIC;\r\n        );\r\n        PORT (\r\n            a : IN STD_LOGIC;\r\n            b : IN STD_LOGIC;\r\n        );\r\n    END cc;\r\n\r\nBEGIN\r\n    C : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\n    D : cc PORT MAP(\r\n        long => a,\r\n        b => b\r\n    );\r\nEND;";
     actual = beautify(input, settings);
-    assertAndCountTest("Multiple PORT MAPs", expected, actual);
+    assert.equal(actual, expected);
 
-    input = "port (a : in std_logic;\r\n b : in std_logic;\r\n);";
-    expected = "PORT\r\n(\r\n    a : IN std_logic;\r\n    b : IN std_logic;\r\n);";
+    input = "port (a : in STD_LOGIC;\r\n b : in STD_LOGIC;\r\n);";
+    expected = "PORT\r\n(\r\n    a : IN STD_LOGIC;\r\n    b : IN STD_LOGIC;\r\n);";
     new_line_after_symbols_2 = new NewLineSettings();
     new_line_after_symbols_2.newLineAfter = ["then", ";", "generic", "port"];
-    newSettings = deepCopy(settings);
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.NewLineSettings = new_line_after_symbols_2;
     actual = beautify(input, newSettings);
-    assertAndCountTest("New line after PORT", expected, actual);
+    assert.equal(actual, expected);
 
-    newSettings = deepCopy(settings);
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
     newSettings.NewLineSettings.newLineAfter = [];
     input = "component a is\r\nport( Data : inout Std_Logic_Vector(7 downto 0););\r\nend component a;";
-    expected = "COMPONENT a IS\r\n    PORT (Data : INOUT Std_Logic_Vector(7 DOWNTO 0););\r\nEND COMPONENT a;";
+    expected = "COMPONENT a IS\r\n    PORT (Data : INOUT STD_LOGIC_VECTOR(7 DOWNTO 0););\r\nEND COMPONENT a;";
     actual = beautify(input, newSettings);
-    assertAndCountTest("New line after PORT (single line)", expected, actual);
+    assert.equal(actual, expected);
 
     //IntegrationTest20();
 
     input = "architecture a of b is\r\nbegin\r\n    process (w)\r\n    variable t : std_logic_vector (4 downto 0) ;\r\nbegin\r\n    a := (others => '0') ;\r\nend process ;\r\nend a;";
-    expected = "ARCHITECTURE a OF b IS\r\nBEGIN\r\n    PROCESS (w)\r\n        VARIABLE t : std_logic_vector (4 DOWNTO 0);\r\n    BEGIN\r\n        a := (OTHERS => '0');\r\n    END PROCESS;\r\nEND a;";
+    expected = "ARCHITECTURE a OF b IS\r\nBEGIN\r\n    PROCESS (w)\r\n        VARIABLE t : STD_LOGIC_VECTOR (4 DOWNTO 0);\r\n    BEGIN\r\n        a := (OTHERS => '0');\r\n    END PROCESS;\r\nEND a;";
     actual = beautify(input, newSettings);
-    assertAndCountTest("Double BEGIN", expected, actual);
+    assert.equal(actual, expected);
 
-    let newSettings2 = deepCopy(newSettings);
-    newSettings2.SignAlignSettings = new signAlignSettings(false, true, "", []);
-    newSettings2.NewLineSettings.newLineAfter = ["then", ";", "generic", "port"];
-    newSettings2.NewLineSettings.noNewLineAfter = [];
+    newSettings = getDefaultBeautifierSettings(new_line_after_symbols);
+    newSettings.SignAlignSettings = new signAlignSettings(false, true, "", []);
+    newSettings.NewLineSettings.newLineAfter = ["then", ";", "generic", "port"];
+    newSettings.NewLineSettings.noNewLineAfter = [];
     input = "entity a is\r\n    port ( w  : in  std_logic_vector (7 downto 0) ;\r\n           w_s : out std_logic_vector (3 downto 0) ; ) ;\r\nend a ;\r\narchitecture b of a is\r\nbegin\r\n    process ( w )\r\n    variable t : std_logic_vector (4 downto 0) ;\r\n    variable bcd     : std_logic_vector (11 downto 0) ;\r\nbegin\r\n    b(2 downto 0) := w(7 downto 5) ;\r\n    t         := w(4 downto 0) ;\r\n    w_s <= b(11 downto 8) ;\r\n    w <= b(3  downto 0) ;\r\nend process ;\r\nend b ;";
-    expected = "ENTITY a IS\r\n    PORT\r\n    (\r\n        w   : IN std_logic_vector (7 DOWNTO 0);\r\n        w_s : OUT std_logic_vector (3 DOWNTO 0);\r\n    );\r\nEND a;\r\nARCHITECTURE b OF a IS\r\nBEGIN\r\n    PROCESS (w)\r\n        VARIABLE t   : std_logic_vector (4 DOWNTO 0);\r\n        VARIABLE bcd : std_logic_vector (11 DOWNTO 0);\r\n    BEGIN\r\n        b(2 DOWNTO 0) := w(7 DOWNTO 5);\r\n        t             := w(4 DOWNTO 0);\r\n        w_s <= b(11 DOWNTO 8);\r\n        w   <= b(3 DOWNTO 0);\r\n    END PROCESS;\r\nEND b;";
-    actual = beautify(input, newSettings2);
-    assertAndCountTest("Align signs in all places", expected, actual);
+    expected = "ENTITY a IS\r\n    PORT\r\n    (\r\n        w   : IN STD_LOGIC_VECTOR (7 DOWNTO 0);\r\n        w_s : OUT STD_LOGIC_VECTOR (3 DOWNTO 0);\r\n    );\r\nEND a;\r\nARCHITECTURE b OF a IS\r\nBEGIN\r\n    PROCESS (w)\r\n        VARIABLE t   : STD_LOGIC_VECTOR (4 DOWNTO 0);\r\n        VARIABLE bcd : STD_LOGIC_VECTOR (11 DOWNTO 0);\r\n    BEGIN\r\n        b(2 DOWNTO 0) := w(7 DOWNTO 5);\r\n        t             := w(4 DOWNTO 0);\r\n        w_s <= b(11 DOWNTO 8);\r\n        w   <= b(3 DOWNTO 0);\r\n    END PROCESS;\r\nEND b;";
+    actual = beautify(input, newSettings);
+    assert.equal(actual, expected);
 
     IntegrationTest23();
     IntegrationTest24();
@@ -1078,7 +1047,7 @@ function IntegrationTest39() {
     let input = 'assert v /  = ( X  "01", X  "02" )  ;';
     let expected = 'ASSERT v /= (X "01", X "02");';
     let actual = beautify(input, settings);
-    assertAndCountTest("signs", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest40() {
@@ -1114,7 +1083,7 @@ function IntegrationTest44() {
     let input = 'REPORT\n"A_ARITH_MOD_tester.main Tester is now ready. A total of " &\nINTEGER\'image(totalTests) & " tests have been detected.";';
     let expected = 'REPORT\r\n	"A_ARITH_MOD_tester.main Tester is now ready. A total of " &\r\n	INTEGER\'image(totalTests) & " tests have been detected.";';
     let actual = beautify(input, settings);
-    assertAndCountTest("ingore keywords in quotes", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest45() {
@@ -1125,7 +1094,7 @@ function IntegrationTest45() {
     let input = 'REPORT\n"A_ARITH_MOD_tester.main Tester is now ready. A total OF " &\nINTEGER\'image(totalTests) & " tests have been detected.";';
     let expected = 'report\r\n	"A_ARITH_MOD_tester.main Tester is now ready. A total OF " &\r\n	integer\'image(totalTests) & " tests have been detected.";';
     let actual = beautify(input, settings);
-    assertAndCountTest("ingore keywords in quotes & convert to lowercase", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest46() {
@@ -1178,7 +1147,7 @@ function IntegrationTest51() {
     let input = 'architecture behaviour of a is\r\nbegin\r\n    main : process\r\n        variable b : e := (others => DR_INIT);\r\n        variable c, d : positive := 8;\r\n    begin\r\n    end process main;\r\nend architecture behaviour;';
     let expected = 'ARCHITECTURE behaviour OF a IS\r\nBEGIN\r\n    main : PROCESS\r\n        VARIABLE b    : e        := (OTHERS => DR_INIT);\r\n        VARIABLE c, d : POSITIVE := 8;\r\n    BEGIN\r\n    END PROCESS main;\r\nEND ARCHITECTURE behaviour;';
     let actual = beautify(input, settings);
-    assertAndCountTest("process with name", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest52() {
@@ -1260,7 +1229,7 @@ function IntegrationTest61() {
     let input = 'port\r\nmap(\r\na => a(i)\r\n);';
     let expected = 'PORT MAP\r\n(\r\n    a => a(i)\r\n);';
     let actual = beautify(input, settings);
-    assertAndCountTest("port new line map", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest62() {
@@ -1269,7 +1238,7 @@ function IntegrationTest62() {
     let input = 'port map(\r\na => a(i)\r\n);';
     let expected = 'PORT MAP\r\n(\r\n    a => a(i)\r\n);';
     let actual = beautify(input, settings);
-    assertAndCountTest("port map new line", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest63() {
@@ -1278,7 +1247,7 @@ function IntegrationTest63() {
     let input = 'reg : a PORT\r\nMAP(\r\nb => c(i)\r\n);';
     let expected = 'reg : a PORT MAP\r\n(\r\n    b => c(i)\r\n);';
     let actual = beautify(input, settings);
-    assertAndCountTest("port map new line 2", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest64() {
@@ -1286,7 +1255,7 @@ function IntegrationTest64() {
     let input = 'reg : a PORT\r\nMAP(\r\nb => c(i)\r\n);';
     let expected = 'reg : a PORT MAP(\r\n    b => c(i)\r\n);';
     let actual = beautify(input, settings);
-    assertAndCountTest("port map no new line", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest65() {
@@ -1295,7 +1264,7 @@ function IntegrationTest65() {
     let input = 'reg : a PORT\r\nMAP\r\n(\r\nb => c(i)\r\n);';
     let expected = 'reg : a PORT MAP(\r\n    b => c(i)\r\n);';
     let actual = beautify(input, settings);
-    assertAndCountTest("port map no new line 2", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest66() {
@@ -1304,7 +1273,7 @@ function IntegrationTest66() {
     let input = 'component a is\r\n      generic (b\r\n         );\r\n      port (\r\n          c\r\n	 );\r\n    end component;\r\n-- anything1\r\n-- anything2';
     let expected = 'COMPONENT a IS\r\n    GENERIC (\r\n        b\r\n    );\r\n    PORT (\r\n        c\r\n    );\r\nEND COMPONENT;\r\n-- anything1\r\n-- anything2';
     let actual = beautify(input, settings);
-    assertAndCountTest("component generic", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest67() {
@@ -1312,7 +1281,7 @@ function IntegrationTest67() {
     let input = 'type STATE_TYPE is (\r\n      A,\r\nB,\r\n    C);\r\nA';
     let expected = 'TYPE STATE_TYPE IS (\r\n    A,\r\n    B,\r\n    C);\r\nA';
     let actual = beautify(input, settings);
-    assertAndCountTest("multiline enumerated type is", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest68() {
@@ -1320,7 +1289,7 @@ function IntegrationTest68() {
     let input = 'type STATE_TYPE is (A,  B, C);\r\nA';
     let expected = 'TYPE STATE_TYPE IS (A, B, C);\r\nA';
     let actual = beautify(input, settings);
-    assertAndCountTest("single line enumerated type is", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest69() {
@@ -1328,7 +1297,7 @@ function IntegrationTest69() {
     let input = 'type STATE_TYPE is (\r\n      A,\r\nB,\r\n    C\r\n);\r\nA';
     let expected = 'TYPE STATE_TYPE IS (\r\n    A,\r\n    B,\r\n    C\r\n);\r\nA';
     let actual = beautify(input, settings);
-    assertAndCountTest("multiline enumerated type is", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest70() {
@@ -1336,7 +1305,7 @@ function IntegrationTest70() {
     let input = 'test\r\n        := test';
     let expected = 'test\r\n:= test';
     let actual = beautify(input, settings);
-    assertAndCountTest("multiline assignment", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest71() {
@@ -1344,7 +1313,7 @@ function IntegrationTest71() {
     let input = 'VARIABLE \\#$)!?\\ : INTEGER;\r\nVARIABLE \\try this in verilog\\ : BIT;\r\nVARIABLE \\Buffer\\ : BIT;';
     let expected = 'VARIABLE \\#$)!?\\ : INTEGER;\r\nVARIABLE \\try this in verilog\\ : BIT;\r\nVARIABLE \\Buffer\\ : BIT;';
     let actual = beautify(input, settings);
-    assertAndCountTest("backslash, extended indentifier", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest72() {
@@ -1352,7 +1321,7 @@ function IntegrationTest72() {
     let input = 'test := 12e+6';
     let expected = 'test := 12e+6';
     let actual = beautify(input, settings);
-    assertAndCountTest("scientific notation", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest73() {
@@ -1369,7 +1338,7 @@ function IntegrationTest74() {
     let input = 'test := test;\ntest := test;';
     let expected = 'test := test; EOF test := test;';
     let actual = beautify(input, settings);
-    assertAndCountTest("end of line 2", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest75() {
@@ -1378,7 +1347,7 @@ function IntegrationTest75() {
     let input = 'test := loooong; -- test\r\ntest := short; -- test';
     let expected = 'test := loooong; -- test\r\ntest := short;   -- test';
     let actual = beautify(input, settings);
-    assertAndCountTest("align comments", expected, actual);
+    assert.equal(actual, expected);
 }
 
 function IntegrationTest76() {
@@ -1515,10 +1484,10 @@ function IntegrationTest7() {
     new_line_after_symbols.newLineAfter = ["then", ";"];
     let settings = getDefaultBeautifierSettings(new_line_after_symbols);
     settings.SignAlignSettings = new signAlignSettings(true, false, "global", ["PORT", "GENERIC"]);
-    let input = "entity p is\r\n  generic\r\n  (\r\n    -- INCLK\r\n    INCLK0_INPUT_FREQUENCY  : natural;\r\n\r\n    -- CLK1\r\n    CLK1_DIVIDE_BY          : natural := 1;\r\n    CLK1_MULTIPLY_BY        : unnatural:= 1;\r\n    CLK1_PHASE_SHIFT        : string := \"0\"\r\n  );\r\n	port\r\n	(\r\n		inclk0	: in std_logic  := '0';\r\n		c0		    : out std_logic ;\r\n		c1		    : out std_logic \r\n	);\r\nEND pll;";
-    let expected = "ENTITY p IS\r\n    GENERIC (\r\n        -- INCLK\r\n        INCLK0_INPUT_FREQUENCY : NATURAL;\r\n\r\n        -- CLK1\r\n        CLK1_DIVIDE_BY         : NATURAL   := 1;\r\n        CLK1_MULTIPLY_BY       : unnatural := 1;\r\n        CLK1_PHASE_SHIFT       : STRING    := \"0\"\r\n    );\r\n    PORT (\r\n        inclk0 : IN std_logic := '0';\r\n        c0     : OUT std_logic;\r\n        c1     : OUT std_logic\r\n    );\r\nEND pll;";
+    let input = "entity p is\r\n  generic\r\n  (\r\n    -- INCLK\r\n    INCLK0_INPUT_FREQUENCY  : natural;\r\n\r\n    -- CLK1\r\n    CLK1_DIVIDE_BY          : natural := 1;\r\n    CLK1_MULTIPLY_BY        : unnatural:= 1;\r\n    CLK1_PHASE_SHIFT        : string := \"0\"\r\n  );\r\n	port\r\n	(\r\n		inclk0	: in STD_LOGIC  := '0';\r\n		c0		    : out STD_LOGIC ;\r\n		c1		    : out STD_LOGIC \r\n	);\r\nEND pll;";
+    let expected = "ENTITY p IS\r\n    GENERIC (\r\n        -- INCLK\r\n        INCLK0_INPUT_FREQUENCY : NATURAL;\r\n\r\n        -- CLK1\r\n        CLK1_DIVIDE_BY         : NATURAL   := 1;\r\n        CLK1_MULTIPLY_BY       : unnatural := 1;\r\n        CLK1_PHASE_SHIFT       : STRING    := \"0\"\r\n    );\r\n    PORT (\r\n        inclk0 : IN STD_LOGIC := '0';\r\n        c0     : OUT STD_LOGIC;\r\n        c1     : OUT STD_LOGIC\r\n    );\r\nEND pll;";
     let actual = beautify(input, settings);
-    assertAndCountTest("Sign align in PORT & GENERIC", expected, actual);
+    return assert.equal(actual, expected);
 }
 
 function IntegrationTest2() {
@@ -1535,28 +1504,5 @@ function IntegrationTest2() {
 
 function assertAndCountTest(testName: string, expected: string, actual: string, message?: undefined) {
     testCount++;
-    return assert(expected, actual);
-}
-
-function CompareArray(actual: Array<string>, expected: Array<string>) {
-    var l = Math.min(actual.length, expected.length);
-    let result: string = "";
-    for (var i = 0; i < l; i++) {
-        if (actual[i] != expected[i]) {
-            // result += CompareString(actual[i], expected[i]) + "\n";
-        }
-    }
-    if (actual.length > expected.length) {
-        result += "actual has more items";
-        for (var i = expected.length; i < actual.length; i++) {
-            result += "actual[" + i + "] = " + actual[i];
-        }
-    }
-    else if (actual.length < expected.length) {
-        result += "expected has more items";
-        for (var i = actual.length; i < expected.length; i++) {
-            result += "expected[" + i + "] = " + expected[i];
-        }
-    }
-    return true;
+    return assert.equal(actual, expected);
 }

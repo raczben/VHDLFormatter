@@ -1,5 +1,7 @@
 # VHDL Formatter (CLI Version)
 
+[![Build Status](https://travis-ci.org/raczben/VHDLFormatter.svg?branch=master)](https://travis-ci.org/raczben/VHDLFormatter)
+
 VHDL CLI code formatter written in TypeScript.
 
 [Original online version https://g2384.github.io/VHDLFormatter/](https://g2384.github.io/VHDLFormatter/)
@@ -14,9 +16,29 @@ node vhdlformat.js [OPTIONS] <filename 1> [filename 2] ... [filename N]
 
 The following command line options are available:
 
-- `--write`: Overwrites the source files with the formatted versions.
-- `--quiet`: Doesn't send the formatted file to stdout.
-- `--debug`: Displays additional debug info when an error occurs.
+  --key-word-case <casestr>  upper or lower-case the VHDL keywords (default: "uppercase")
+  --type-case <casestr>      upper or lower-case the VHDL types (default: "uppercase")
+  --indentation <blankstr>   Unit of the indentation. (default: "    ")
+  --end-of-line <eol>        Can set the line endings depending your platform. (default: "\r\n")
+  --inputFiles <path>        The input files that should be beautified
+  --overwrite
+  --debug
+  --quiet
+  --remove-comments
+  --remove-reports
+  --check-alias
+  -v, --version              output the version number
+  -h, --help                 output usage information
+  
+## For contributors
+
+Run test with :
+
+`npm t`  
+
+Build with:
+
+`tsc`
 
 ## Release Notes
 
