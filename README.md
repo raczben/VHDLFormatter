@@ -15,7 +15,7 @@ node vhdlformat.js [OPTIONS] <filename 1> [filename 2] ... [filename N]
 ## Options:
 
 The following command line options are available:
-
+```
   --key-word-case <casestr>  upper or lower-case the VHDL keywords (default: "uppercase")
   --type-case <casestr>      upper or lower-case the VHDL types (default: "uppercase")
   --indentation <blankstr>   Unit of the indentation. (default: "    ")
@@ -29,7 +29,8 @@ The following command line options are available:
   --check-alias
   -v, --version              output the version number
   -h, --help                 output usage information
-  
+```
+
 ## For contributors
 
 Run test with :
