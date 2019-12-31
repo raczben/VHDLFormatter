@@ -33,7 +33,10 @@ function main(options) {
                 reject(err);
             }
             const input_vhdl = data.toString('utf8');
-            const settings = new VHDLFormatter_1.BeautifierSettings(options.removeComments, options.removeReports, options.checkAlias, options.signAlignSettings, options.keyWordCase, options.typeCase, options.indentation, null, options.endOfLine);
+            var endOfLine = options.endOfLine;
+            endOfLine = endOfLine.replace(/\\r/g, "\r");
+            endOfLine = endOfLine.replace(/\\n/g, "\n");
+            const settings = new VHDLFormatter_1.BeautifierSettings(options.removeComments, options.removeReports, options.checkAlias, options.signAlignSettings, options.keyWordCase, options.typeCase, options.indentation, null, endOfLine);
             const result = beautify(input_vhdl, settings);
             if (result.err !== null) {
                 console.error(`-- [ERROR]: could not beautify "${options.input}"`);
